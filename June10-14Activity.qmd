@@ -1,0 +1,283 @@
+---
+title: "June 10-14 Activity"
+format: html
+editor: visual
+---
+
+## Play Around With Data
+
+```{r Setup, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(tibble)
+library(kableExtra)
+data <- read.csv("data_snippet.csv")
+```
+
+## Some Major Takeaways Visualizations
+
+```{r}
+personal_prefix <- "Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank...__________About......Personal.impacts..."
+professional_prefix <- "Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank.....__________Abo......Academic.and.or.professional.impacts..."
+
+remove_prefix <- function(column_name, prefix_to_remove) {
+  column_name <- gsub(prefix_to_remove, "", column_name)
+  return(column_name)
+}
+
+personal_concern_columns <- grep(personal_prefix, names(data), value = TRUE)
+professional_concern_columns <- grep(professional_prefix, names(data), value = TRUE)
+
+cleaned_personal_column_names <- lapply(personal_concern_columns, remove_prefix, prefix_to_remove = personal_prefix)
+cleaned_professional_column_names <- lapply(professional_concern_columns, remove_prefix, prefix_to_remove = professional_prefix)
+
+df_personal <- data[personal_concern_columns]
+df_professional <- data[professional_concern_columns]
+names(df_personal) <- cleaned_personal_column_names
+names(df_professional) <- cleaned_professional_column_names
+```
+
+```{r}
+# 0 - Not Concerned
+# 1 - pre-covid issue
+# 2 - new issue due to covid
+# 3 - cannot access resources
+head(df_personal)
+head(df_professional)
+```
+
+```{r}
+aggregate_personal <- data.frame(
+  Pre_COVID_Count = colSums(df_personal == 1, na.rm = TRUE),
+  New_COVID_Count = colSums(df_personal == 2, na.rm = TRUE)
+)
+
+aggregate_professional <- data.frame(
+  Pre_COVID_Count = colSums(df_professional == 1, na.rm = TRUE),
+  New_COVID_Count = colSums(df_professional == 2, na.rm = TRUE)
+)
+
+filtered_aggregate_personal <- aggregate_personal[rowSums(aggregate_personal) > 0, ]
+filtered_aggregate_professional <- aggregate_professional[rowSums(aggregate_professional) > 0, ]
+
+tbl_personal <- as_tibble(filtered_aggregate_personal)
+tbl_professional <- as_tibble(filtered_aggregate_professional)
+
+styled_tbl_personal <- tbl_personal %>%
+  mutate(
+    Concern_Category = c("Nutrition", "Housing", "Medical", "Finances", "Gen Well Gein", "Mental Health", "Living Conditions", "Distance from Friends & Family", "Relationships", "Childcare", "Education for Kids"),
+    Difference = New_COVID_Count - Pre_COVID_Count
+  ) %>%
+  select(Concern_Category, Pre_COVID_Count, New_COVID_Count, Difference) %>%
+  kable(., align = "c", caption = "Distribution of Pre-COVID and New COVID Issues (Personal)") %>%
+  kable_styling(full_width = FALSE)
+
+styled_tbl_professional <- tbl_professional %>%
+  mutate(
+    Concern_Category = c("Learning environment", "Completing education", "Decisions about graduate school", "Other education-related", "Professional development", "Finding a job", "Keeping current job", "Telework tools", "Telework productivity"),
+    Difference = New_COVID_Count - Pre_COVID_Count
+  ) %>%
+  select(Concern_Category, Pre_COVID_Count, New_COVID_Count, Difference) %>%
+  kable(., align = "c", caption = "Distribution of Pre-COVID and New COVID Issues (Professional)") %>%
+  kable_styling(full_width = FALSE)
+
+styled_tbl_personal
+styled_tbl_professional
+```
+
+```{r}
+personal_labels <- c("Nutrition", "Housing", "Medical", "Finances", "Gen Well Gein", "Mental Health", "Living Conditions", "Distance from Friends & Family", "Relationships", "Childcare", "Education for Kids")
+
+df_personal_long <- filtered_aggregate_personal %>%
+  rownames_to_column(var = "Concern_Category") %>%
+  pivot_longer(cols = c("Pre_COVID_Count", "New_COVID_Count"), 
+               names_to = "Type", values_to = "Count") %>%
+  mutate(Concern_Category = factor(Concern_Category, 
+                                   levels = rownames(filtered_aggregate_personal),
+                                   labels = personal_labels))
+type_order <- c("Pre_COVID_Count", "New_COVID_Count")
+df_personal_long$Type <- factor(df_personal_long$Type, levels = type_order)
+
+ggplot(df_personal_long, aes(x = Concern_Category, y = Count, fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  scale_fill_manual(values = c("skyblue", "orange"), 
+                    labels = c("Pre-COVID Issue", "New Issue due to COVID")) +
+  labs(title = "Distribution of Pre-COVID and New COVID Issues (Personal)",
+       x = "", y = "Count", fill = "Issue Type") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r}
+professional_labels <- c("Learning environment", "Completing education", "Decisions about graduate school", "Other education-related", "Professional development", "Finding a job", "Keeping current job", "Telework tools", "Telework productivity")
+
+df_professional_long <- filtered_aggregate_professional %>%
+  rownames_to_column(var = "Concern_Category") %>%
+  pivot_longer(cols = c("Pre_COVID_Count", "New_COVID_Count"), 
+               names_to = "Type", values_to = "Count") %>%
+  mutate(Concern_Category = factor(Concern_Category, 
+                                   levels = rownames(filtered_aggregate_professional),
+                                   labels = professional_labels))
+
+type_order <- c("Pre_COVID_Count", "New_COVID_Count")
+df_professional_long$Type <- factor(df_professional_long$Type, levels = type_order)
+
+ggplot(df_professional_long, aes(x = Concern_Category, y = Count, fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  scale_fill_manual(values = c("skyblue", "orange"), 
+                    labels = c("Pre-COVID Issue", "New Issue due to COVID")) +
+  labs(title = "Distribution of Pre-COVID and New COVID Issues (Professional)",
+       x = "", y = "Count", fill = "Issue Type") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+## Demographics Visualizations
+
+```{r}
+race_ethnicity_counts <- data %>%
+  separate_rows(`What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice`, sep = ",") %>%
+  count(`What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice`, name = "count")
+
+race_ethnicity_counts <- race_ethnicity_counts %>%
+  rename(race_ethnicity = `What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice`)
+
+ggplot(race_ethnicity_counts, aes(x = reorder(race_ethnicity, -count), y = count)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Demographic Makeup",
+       x = "Race/Ethnicity",
+       y = "Count") +
+  theme_minimal()
+```
+
+```{r}
+race_ethnicity_counts %>%
+  ggplot(aes(x = "", y = count, fill = race_ethnicity)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "Demographic Makeup") +
+  theme_void() +
+  theme(legend.position = "right")
+```
+
+```{r}
+render_summary_table_graph <- function(df, column, category_name) {
+  total <- nrow(df)
+  
+  summary_df <- df %>%
+    separate_rows({{column}}, sep = ",") %>%
+    count({{column}}, name = "count") %>%
+    mutate(percentage = round((count / total) * 100, 2)) %>%
+    rename(Category = {{column}}) %>% 
+    arrange(desc(count))
+  
+  summary_table <- kable(summary_df, format = "html", col.names = c(category_name, "Count", "Percentage (%)")) %>%
+    kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed")) %>%
+  print(summary_table)
+  
+  graph <- ggplot(summary_df, aes(x = reorder(Category, -count), y = count, fill = Category)) +
+    geom_bar(stat = "identity", color = "white", show.legend = FALSE) +
+    coord_flip() +
+    labs(title = paste(category_name, "Demographic Makeup"),
+         x = "",
+         y = "Count") +
+    theme_minimal(base_size = 15) +
+    theme(axis.title.x = element_text(margin = margin(t = 20)),
+          axis.title.y = element_text(margin = margin(r = 20)),
+          plot.title = element_text(hjust = 0.5, face = "bold", size = 18)) +
+    scale_fill_brewer(palette = "Set3")
+  print(graph)
+}
+
+render_summary_table_graph(data, `What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice`, "Race/Ethnicity")
+render_summary_table_graph(data, `How.would.you.describe.yourself...Mark.one.answer....Selected.Choice`, "Gender Identity")
+# render_summary_table_graph(data, `Institution.Type`, "Institution Type")
+render_summary_table_graph(data, Role, "Role")
+```
+
+## Faceting
+
+```{r}
+personal_prefix <- "Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank...__________About......Personal.impacts..."
+professional_prefix <- "Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank.....__________Abo......Academic.and.or.professional.impacts..."
+race_prefix <- 'What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice'
+
+remove_prefix <- function(column_name, prefix_to_remove) {
+  column_name <- gsub(prefix_to_remove, "", column_name)
+  return(column_name)
+}
+
+personal_concern_columns <- grep(personal_prefix, names(data), value = TRUE)
+professional_concern_columns <- grep(professional_prefix, names(data), value = TRUE)
+race_columns <- grep(race_prefix, names(data), value = TRUE)
+
+cleaned_personal_column_names <- lapply(personal_concern_columns, remove_prefix, prefix_to_remove = personal_prefix)
+cleaned_professional_column_names <- lapply(professional_concern_columns, remove_prefix, prefix_to_remove = professional_prefix)
+
+df_personal <- data[c(personal_concern_columns, race_columns)]
+df_professional <- data[c(professional_concern_columns,race_columns)]
+names(df_personal) <- c(cleaned_personal_column_names, 'Race_Ethnicity')
+names(df_professional) <- c(cleaned_professional_column_names, 'Race_Ethnicity')
+```
+
+```{r}
+head(df_personal)
+```
+
+```{r}
+df_personal[] <- lapply(df_personal[], as.character)
+
+personal_data_long <- df_personal %>%
+  mutate(id = row_number()) %>%
+  separate_rows(General.well.being, sep = ",") %>%
+  separate_rows(Race_Ethnicity, sep = ",") %>%
+  mutate(General.well.being = as.integer(General.well.being))
+
+concern_counts <- personal_data_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(
+    pre_covid = sum(General.well.being == 1),
+    post_covid = sum(General.well.being == 2)
+  )
+concern_counts <- concern_counts %>%
+  mutate(difference = post_covid - pre_covid)
+
+ggplot(concern_counts, aes(x = difference, y = difference, fill = Race_Ethnicity)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "Difference in Concerns (Post - Pre)") +
+  theme_minimal() +
+  theme(axis.text.y = element_blank())
+```
+
+```{r}
+concern_counts %>%
+  kable(col.names = c("Race/Ethnicity", "Pre-COVID Concerns", "Post-COVID Concerns", "Difference (Post - Pre)"), 
+        caption = "Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+```{r}
+df_professional[] <- lapply(df_professional[], as.character)
+
+personal_data_long <- df_professional %>%
+  mutate(id = row_number()) %>%
+  separate_rows(Professional.development..internships..programs..conferences., sep = ",") %>%
+  separate_rows(Race_Ethnicity, sep = ",") %>%
+  mutate(General.well.being = as.integer(Professional.development..internships..programs..conferences.))
+
+concern_counts <- personal_data_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(
+    pre_covid = sum(Professional.development..internships..programs..conferences. == 1),
+    post_covid = sum(Professional.development..internships..programs..conferences. == 2)
+  )
+concern_counts <- concern_counts %>%
+  mutate(difference = post_covid - pre_covid)
+
+concern_counts %>%
+  kable(col.names = c("Race/Ethnicity", "Pre-COVID Concerns", "Post-COVID Concerns", "Difference (Post - Pre)"), 
+        caption = "Difference in Post-Pre COVID Concerns for Professional Development") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
