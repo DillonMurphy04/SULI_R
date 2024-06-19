@@ -267,17 +267,141 @@ personal_data_long <- df_professional %>%
   separate_rows(Race_Ethnicity, sep = ",") %>%
   mutate(General.well.being = as.integer(Professional.development..internships..programs..conferences.))
 
+total_counts <- personal_data_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(total = n())
+
 concern_counts <- personal_data_long %>%
   group_by(Race_Ethnicity) %>%
   summarize(
     pre_covid = sum(Professional.development..internships..programs..conferences. == 1),
     post_covid = sum(Professional.development..internships..programs..conferences. == 2)
+  ) %>%
+  left_join(total_counts, by = "Race_Ethnicity") %>%
+  mutate(
+    pre_covid_prop = round((pre_covid / total) * 100, 2),
+    post_covid_prop = round((post_covid / total) * 100, 2),
+    difference = round(post_covid_prop - pre_covid_prop, 2)
   )
-concern_counts <- concern_counts %>%
-  mutate(difference = post_covid - pre_covid)
 
 concern_counts %>%
-  kable(col.names = c("Race/Ethnicity", "Pre-COVID Concerns", "Post-COVID Concerns", "Difference (Post - Pre)"), 
-        caption = "Difference in Post-Pre COVID Concerns for Professional Development") %>%
+  select(Race_Ethnicity, pre_covid_prop, post_covid_prop, difference) %>%
+  kable(col.names = c("Race/Ethnicity", "Pre-COVID Proportion (%)", "Post-COVID Proportion (%)", "Difference (Post - Pre)"), 
+        caption = "Difference in Post-Pre COVID Concerns for Professional Development (Proportions)") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+```{r}
+df_personal[] <- lapply(df_personal[], as.character)
+
+personal_data_long <- df_personal %>%
+  mutate(id = row_number()) %>%
+  separate_rows(General.well.being, sep = ",") %>%
+  separate_rows(Race_Ethnicity, sep = ",") %>%
+  mutate(General.well.being = as.integer(General.well.being))
+
+total_counts <- personal_data_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(total = n())
+
+concern_counts <- personal_data_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(
+    pre_covid = sum(General.well.being == 1),
+    post_covid = sum(General.well.being == 2)
+  ) %>%
+  left_join(total_counts, by = "Race_Ethnicity") %>%
+  mutate(
+    pre_covid_prop = round((pre_covid / total) * 100, 2),
+    post_covid_prop = round((post_covid / total) * 100, 2),
+    difference = round(post_covid_prop - pre_covid_prop, 2)
+  )
+
+concern_counts %>%
+  select(Race_Ethnicity, pre_covid_prop, post_covid_prop, difference) %>%
+  kable(col.names = c("Race/Ethnicity", "Pre-COVID Proportion (%)", "Post-COVID Proportion (%)", "Difference (Post - Pre)"), 
+        caption = "Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity (Proportions)") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+## Try By Role
+
+```{r}
+personal_prefix <- "Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank...__________About......Personal.impacts..."
+professional_prefix <- "Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank.....__________Abo......Academic.and.or.professional.impacts..."
+
+remove_prefix <- function(column_name, prefix_to_remove) {
+  column_name <- gsub(prefix_to_remove, "", column_name)
+  return(column_name)
+}
+
+personal_concern_columns <- grep(personal_prefix, names(data), value = TRUE)
+professional_concern_columns <- grep(professional_prefix, names(data), value = TRUE)
+
+cleaned_personal_column_names <- lapply(personal_concern_columns, remove_prefix, prefix_to_remove = personal_prefix)
+cleaned_professional_column_names <- lapply(professional_concern_columns, remove_prefix, prefix_to_remove = professional_prefix)
+
+df_personal <- data[c(personal_concern_columns, "Role")]
+df_professional <- data[c(professional_concern_columns,"Role")]
+names(df_personal) <- c(cleaned_personal_column_names, 'Role')
+names(df_professional) <- c(cleaned_professional_column_names, 'Role')
+```
+
+```{r}
+df_professional <- df_professional %>%
+  select(-starts_with("Other..write.in."))
+
+df_professional[] <- lapply(df_professional[], as.character)
+
+professional_columns <- names(df_professional)[-which(names(df_professional) == "Role")]
+
+personal_data_long <- df_professional %>%
+  mutate(id = row_number()) %>%
+  separate_rows(Role, sep = ",") %>%
+  pivot_longer(cols = all_of(professional_columns), 
+               names_to = "Professional_Development", 
+               values_to = "Concern") %>%
+  separate_rows(Concern, sep = ",") %>%
+  mutate(Concern = as.integer(Concern))
+
+# Calculate the total number of concerns for each Role
+total_counts <- personal_data_long %>%
+  group_by(Role, Professional_Development) %>%
+  summarize(total = n(), .groups = 'drop')
+
+# Calculate the proportions of pre-COVID and post-COVID concerns
+concern_counts <- personal_data_long %>%
+  group_by(Role, Professional_Development) %>%
+  summarize(
+    pre_covid = sum(Concern == 1),
+    post_covid = sum(Concern == 2),
+    .groups = 'drop'
+  ) %>%
+  left_join(total_counts, by = c("Role", "Professional_Development")) %>%
+  mutate(
+    pre_covid_prop = round((pre_covid / total) * 100, 2),
+    post_covid_prop = round((post_covid / total) * 100, 2),
+    difference = round(post_covid_prop - pre_covid_prop, 2)
+  )
+
+df_professional_long <- concern_counts %>%
+  pivot_longer(cols = c("pre_covid_prop", "post_covid_prop"), 
+               names_to = "Type", 
+               values_to = "Proportion") %>%
+  mutate(Type = recode(Type, "pre_covid_prop" = "Pre-COVID Proportion", "post_covid_prop" = "Post-COVID Proportion"))
+
+ggplot(df_professional_long, aes(x = Professional_Development, y = Proportion, fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  scale_fill_manual(values = c("skyblue", "orange"), 
+                    labels = c("Pre-COVID Proportion", "Post-COVID Proportion")) +
+  labs(title = "Distribution of Pre-COVID and Post-COVID Issues (Professional Development)",
+       x = "", y = "Proportion (%)", fill = "Issue Type") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+
+concern_counts %>%
+  select(Role, Professional_Development, pre_covid_prop, post_covid_prop, difference) %>%
+  kable(col.names = c("Role", "Professional Development", "Pre-COVID Proportion (%)", "Post-COVID Proportion (%)", "Difference (Post - Pre)"), 
+        caption = "Difference in Post-Pre COVID Concerns for Professional Development (Proportions)") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 ```
