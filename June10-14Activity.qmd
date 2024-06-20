@@ -390,18 +390,31 @@ df_professional_long <- concern_counts %>%
                values_to = "Proportion") %>%
   mutate(Type = recode(Type, "pre_covid_prop" = "Pre-COVID Proportion", "post_covid_prop" = "Post-COVID Proportion"))
 
-ggplot(df_professional_long, aes(x = Professional_Development, y = Proportion, fill = Type)) +
-  geom_bar(stat = "identity", position = position_dodge()) +
-  scale_fill_manual(values = c("skyblue", "orange"), 
-                    labels = c("Pre-COVID Proportion", "Post-COVID Proportion")) +
-  labs(title = "Distribution of Pre-COVID and Post-COVID Issues (Professional Development)",
-       x = "", y = "Proportion (%)", fill = "Issue Type") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
-
 concern_counts %>%
   select(Role, Professional_Development, pre_covid_prop, post_covid_prop, difference) %>%
   kable(col.names = c("Role", "Professional Development", "Pre-COVID Proportion (%)", "Post-COVID Proportion (%)", "Difference (Post - Pre)"), 
         caption = "Difference in Post-Pre COVID Concerns for Professional Development (Proportions)") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+```{r}
+ggplot(concern_counts, aes(x = Role, y = difference, fill = Role)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Professional_Development, scales = "free_y") +
+  labs(title = "Difference in Proportion of COVID Concerns by Professional Development Category",
+       x = "Role", y = "Difference in Proportion (Post - Pre)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "none")
+```
+
+```{r}
+ggplot(concern_counts, aes(x = Professional_Development, y = difference, fill = Professional_Development)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Role, scales = "free_y") +
+  labs(title = "Difference in Proportion of COVID Concerns by Professional Development Category Faceted by Role",
+       x = "Role", y = "Difference in Proportion (Post - Pre)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "none")
 ```
