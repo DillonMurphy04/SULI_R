@@ -225,85 +225,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>styled_tbl_personal <span class="ot">&lt;-</span> tbl_personal <span class="sc">%&gt;%</span></span>
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Concern_Category =</span> <span class="fu">c</span>(<span class="st">"Nutrition"</span>, <span class="st">"Housing"</span>, <span class="st">"Medical"</span>, <span class="st">"Finances"</span>, <span class="st">"Gen Well Gein"</span>, <span class="st">"Mental Health"</span>, <span class="st">"Living Conditions"</span>, <span class="st">"Distance from Friends &amp; Family"</span>, <span class="st">"Relationships"</span>, <span class="st">"Childcare"</span>, <span class="st">"Education for Kids"</span>)</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(., <span class="at">align =</span> <span class="st">"c"</span>, <span class="at">caption =</span> <span class="st">"Distribution of Pre-COVID and New COVID Issues (Personal)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>styled_tbl_professional <span class="ot">&lt;-</span> tbl_professional <span class="sc">%&gt;%</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">Concern_Category =</span> <span class="fu">c</span>(<span class="st">"Learning environment"</span>, <span class="st">"Completing education"</span>, <span class="st">"Decisions about graduate school"</span>, <span class="st">"Other education-related"</span>, <span class="st">"Professional development"</span>, <span class="st">"Finding a job"</span>, <span class="st">"Keeping current job"</span>, <span class="st">"Telework tools"</span>, <span class="st">"Telework productivity"</span>)</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(., <span class="at">align =</span> <span class="st">"c"</span>, <span class="at">caption =</span> <span class="st">"Distribution of Pre-COVID and New COVID Issues (Professional)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>styled_tbl_personal</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Concern_Category =</span> <span class="fu">c</span>(<span class="st">"Nutrition"</span>, <span class="st">"Housing"</span>, <span class="st">"Medical"</span>, <span class="st">"Finances"</span>, <span class="st">"Gen Well Gein"</span>, <span class="st">"Mental Health"</span>, <span class="st">"Living Conditions"</span>, <span class="st">"Distance from Friends &amp; Family"</span>, <span class="st">"Relationships"</span>, <span class="st">"Childcare"</span>, <span class="st">"Education for Kids"</span>),</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">Difference =</span> New_COVID_Count <span class="sc">-</span> Pre_COVID_Count</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Concern_Category, Pre_COVID_Count, New_COVID_Count, Difference) <span class="sc">%&gt;%</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(., <span class="at">align =</span> <span class="st">"c"</span>, <span class="at">caption =</span> <span class="st">"Distribution of Pre-COVID and New COVID Issues (Personal)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>styled_tbl_professional <span class="ot">&lt;-</span> tbl_professional <span class="sc">%&gt;%</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">Concern_Category =</span> <span class="fu">c</span>(<span class="st">"Learning environment"</span>, <span class="st">"Completing education"</span>, <span class="st">"Decisions about graduate school"</span>, <span class="st">"Other education-related"</span>, <span class="st">"Professional development"</span>, <span class="st">"Finding a job"</span>, <span class="st">"Keeping current job"</span>, <span class="st">"Telework tools"</span>, <span class="st">"Telework productivity"</span>),</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">Difference =</span> New_COVID_Count <span class="sc">-</span> Pre_COVID_Count</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Concern_Category, Pre_COVID_Count, New_COVID_Count, Difference) <span class="sc">%&gt;%</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(., <span class="at">align =</span> <span class="st">"c"</span>, <span class="at">caption =</span> <span class="st">"Distribution of Pre-COVID and New COVID Issues (Professional)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>styled_tbl_personal</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <table class="table table-sm table-striped small" data-quarto-postprocess="true">
 <caption>Distribution of Pre-COVID and New COVID Issues (Personal)</caption>
 <thead>
 <tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">Concern_Category</th>
 <th style="text-align: center;" data-quarto-table-cell-role="th">Pre_COVID_Count</th>
 <th style="text-align: center;" data-quarto-table-cell-role="th">New_COVID_Count</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">Concern_Category</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Difference</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">3</td>
-<td style="text-align: center;">3</td>
 <td style="text-align: center;">Nutrition</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0</td>
 </tr>
 <tr class="even">
+<td style="text-align: center;">Housing</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">2</td>
-<td style="text-align: center;">Housing</td>
+<td style="text-align: center;">-2</td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">Medical</td>
 <td style="text-align: center;">7</td>
 <td style="text-align: center;">6</td>
-<td style="text-align: center;">Medical</td>
+<td style="text-align: center;">-1</td>
 </tr>
 <tr class="even">
+<td style="text-align: center;">Finances</td>
 <td style="text-align: center;">6</td>
 <td style="text-align: center;">4</td>
-<td style="text-align: center;">Finances</td>
+<td style="text-align: center;">-2</td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">Gen Well Gein</td>
 <td style="text-align: center;">6</td>
 <td style="text-align: center;">12</td>
-<td style="text-align: center;">Gen Well Gein</td>
+<td style="text-align: center;">6</td>
 </tr>
 <tr class="even">
+<td style="text-align: center;">Mental Health</td>
 <td style="text-align: center;">7</td>
 <td style="text-align: center;">8</td>
-<td style="text-align: center;">Mental Health</td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">Living Conditions</td>
 <td style="text-align: center;">5</td>
 <td style="text-align: center;">4</td>
-<td style="text-align: center;">Living Conditions</td>
+<td style="text-align: center;">-1</td>
 </tr>
 <tr class="even">
+<td style="text-align: center;">Distance from Friends &amp; Family</td>
 <td style="text-align: center;">5</td>
 <td style="text-align: center;">10</td>
-<td style="text-align: center;">Distance from Friends &amp; Family</td>
+<td style="text-align: center;">5</td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">Relationships</td>
 <td style="text-align: center;">2</td>
 <td style="text-align: center;">12</td>
-<td style="text-align: center;">Relationships</td>
+<td style="text-align: center;">10</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
 <td style="text-align: center;">Childcare</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">2</td>
 <td style="text-align: center;">Education for Kids</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
 </tr>
 </tbody>
 </table>
@@ -318,56 +334,66 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <caption>Distribution of Pre-COVID and New COVID Issues (Professional)</caption>
 <thead>
 <tr class="header">
+<th style="text-align: center;" data-quarto-table-cell-role="th">Concern_Category</th>
 <th style="text-align: center;" data-quarto-table-cell-role="th">Pre_COVID_Count</th>
 <th style="text-align: center;" data-quarto-table-cell-role="th">New_COVID_Count</th>
-<th style="text-align: center;" data-quarto-table-cell-role="th">Concern_Category</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Difference</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td style="text-align: center;">Learning environment</td>
 <td style="text-align: center;">3</td>
 <td style="text-align: center;">19</td>
-<td style="text-align: center;">Learning environment</td>
+<td style="text-align: center;">16</td>
 </tr>
 <tr class="even">
+<td style="text-align: center;">Completing education</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">8</td>
-<td style="text-align: center;">Completing education</td>
+<td style="text-align: center;">4</td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">Decisions about graduate school</td>
 <td style="text-align: center;">6</td>
 <td style="text-align: center;">4</td>
-<td style="text-align: center;">Decisions about graduate school</td>
+<td style="text-align: center;">-2</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">4</td>
 <td style="text-align: center;">Other education-related</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0</td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">Professional development</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">17</td>
-<td style="text-align: center;">Professional development</td>
+<td style="text-align: center;">13</td>
 </tr>
 <tr class="even">
+<td style="text-align: center;">Finding a job</td>
 <td style="text-align: center;">3</td>
 <td style="text-align: center;">7</td>
-<td style="text-align: center;">Finding a job</td>
+<td style="text-align: center;">4</td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">Keeping current job</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">6</td>
-<td style="text-align: center;">Keeping current job</td>
+<td style="text-align: center;">2</td>
 </tr>
 <tr class="even">
+<td style="text-align: center;">Telework tools</td>
 <td style="text-align: center;">2</td>
 <td style="text-align: center;">18</td>
-<td style="text-align: center;">Telework tools</td>
+<td style="text-align: center;">16</td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">Telework productivity</td>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">21</td>
-<td style="text-align: center;">Telework productivity</td>
+<td style="text-align: center;">20</td>
 </tr>
 </tbody>
 </table>
@@ -395,7 +421,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Pre-COVID Issue"</span>, <span class="st">"New Issue due to COVID"</span>)) <span class="sc">+</span></span>
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Pre-COVID and New COVID Issues (Personal)"</span>,</span>
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">fill =</span> <span class="st">"Issue Type"</span>) <span class="sc">+</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -472,6 +499,1235 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div>
 <figure class="figure">
 <p><img src="June10-14Activity_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>render_summary_table_graph <span class="ot">&lt;-</span> <span class="cf">function</span>(df, column, category_name) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  total <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  summary_df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>({{column}} <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>({{column}} <span class="sc">==</span> <span class="st">"Genderfluid, Genderqueer, or Gender Non-conforming"</span>,<span class="st">"Genderfluid/Genderqueer/Gender non-conforming"</span>, {{column}})) <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate_rows</span>({{column}}, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>({{column}}, <span class="at">name =</span> <span class="st">"count"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">percentage =</span> <span class="fu">round</span>((count <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Category =</span> {{column}}) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(count))</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  summary_table <span class="ot">&lt;-</span> <span class="fu">kable</span>(summary_df, <span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(category_name, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(summary_table)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  graph <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(summary_df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Category, <span class="sc">-</span>count), <span class="at">y =</span> count, <span class="at">fill =</span> Category)) <span class="sc">+</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(category_name, <span class="st">"Demographic Makeup"</span>),</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="st">""</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">20</span>)),</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">r =</span> <span class="dv">20</span>)),</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">18</span>)) <span class="sc">+</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set3"</span>)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">summary_table =</span> summary_table, <span class="at">graph =</span> graph))</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="fu">render_summary_table_graph</span>(data, <span class="st">`</span><span class="at">What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice</span><span class="st">`</span>, <span class="st">"Race/Ethnicity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Race/Ethnicity &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Count &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Percentage (%) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; White &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 63.89 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Hispanic or Latinx &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.67 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Asian &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.89 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Black or African American &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.33 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mixed Race (two or more races) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.33 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Native Hawaiian or Other Pacific Islander &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.56 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Decline to state &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.78 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Other (write-in) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.78 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$summary_table
+NULL
+
+$graph</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">render_summary_table_graph</span>(data, <span class="st">`</span><span class="at">How.would.you.describe.yourself...Mark.one.answer....Selected.Choice</span><span class="st">`</span>, <span class="st">"Gender Identity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Gender Identity &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Count &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Percentage (%) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Woman &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 55.56 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Man &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38.89 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Decline to state &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.78 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Genderfluid/Genderqueer/Gender non-conforming &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.78 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$summary_table
+NULL
+
+$graph</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># render_summary_table_graph(data, `Institution.Type`, "Institution Type")</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">render_summary_table_graph</span>(data, Role, <span class="st">"Role"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Role &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Count &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Percentage (%) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Faculty &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38.89 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Graduate student (second-year or above) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.11 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Employee (including Postdoctoral Scholars) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.89 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; First-year graduate student &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.33 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Undergraduate &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.78 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$summary_table
+NULL
+
+$graph</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(htmltools)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>generate_summary_table <span class="ot">&lt;-</span> <span class="cf">function</span>(df, column, category_name) {</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  total <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Handling specific category name issue</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  summary_df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>({{column}} <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>({{column}} <span class="sc">==</span> <span class="st">"Genderfluid, Genderqueer, or Gender Non-conforming"</span>,<span class="st">"Gender fluid/queer/non-conforming"</span>, {{column}})) <span class="sc">%&gt;%</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate_rows</span>({{column}}, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>({{column}}, <span class="at">name =</span> <span class="st">"count"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">percentage =</span> <span class="fu">round</span>((count <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Category =</span> {{column}}) <span class="sc">%&gt;%</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(count))</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(summary_df)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>summary_df_race_ethnicity <span class="ot">&lt;-</span> <span class="fu">generate_summary_table</span>(data, <span class="st">`</span><span class="at">What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice</span><span class="st">`</span>, <span class="st">"Race/Ethnicity"</span>)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>summary_df_gender_identity <span class="ot">&lt;-</span> <span class="fu">generate_summary_table</span>(data, <span class="st">`</span><span class="at">How.would.you.describe.yourself...Mark.one.answer....Selected.Choice</span><span class="st">`</span>, <span class="st">"Gender Identity"</span>)</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>summary_df_role <span class="ot">&lt;-</span> <span class="fu">generate_summary_table</span>(data, Role, <span class="st">"Role"</span>)</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>formatted_table_race_ethnicity <span class="ot">&lt;-</span> summary_df_race_ethnicity <span class="sc">%&gt;%</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"20%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">width =</span> <span class="st">"10%"</span>, <span class="at">extra_css =</span> <span class="st">"text-align: right;"</span>)</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>formatted_table_gender_identity <span class="ot">&lt;-</span> summary_df_gender_identity <span class="sc">%&gt;%</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Gender Identity"</span>, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"20%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">width =</span> <span class="st">"10%"</span>, <span class="at">extra_css =</span> <span class="st">"text-align: right;"</span>)</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>formatted_table_role <span class="ot">&lt;-</span> summary_df_role <span class="sc">%&gt;%</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Role"</span>, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"20%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">width =</span> <span class="st">"10%"</span>, <span class="at">extra_css =</span> <span class="st">"text-align: right;"</span>)</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>combined_table <span class="ot">&lt;-</span> <span class="fu">paste</span>(</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt;h1 style='text-align: center;'&gt;Demographics&lt;/h1&gt;"</span>,</span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt;br&gt;"</span>,</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>(formatted_table_race_ethnicity),</span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt;br&gt;"</span>,</span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>(formatted_table_gender_identity),</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt;br&gt;"</span>,</span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>(formatted_table_role),</span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">""</span></span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a><span class="fu">HTML</span>(combined_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<h1 style="text-align: center;">Demographics</h1><br>
+<table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Race/Ethnicity</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Count</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Percentage (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 20%;">White</td>
+<td style="text-align: right; width: 10%;">23</td>
+<td style="text-align: right; width: 10%;">63.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 20%;">Hispanic or Latinx</td>
+<td style="text-align: right; width: 10%;">6</td>
+<td style="text-align: right; width: 10%;">16.67</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 20%;">Asian</td>
+<td style="text-align: right; width: 10%;">5</td>
+<td style="text-align: right; width: 10%;">13.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 20%;">Black or African American</td>
+<td style="text-align: right; width: 10%;">3</td>
+<td style="text-align: right; width: 10%;">8.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 20%;">Mixed Race (two or more races)</td>
+<td style="text-align: right; width: 10%;">3</td>
+<td style="text-align: right; width: 10%;">8.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 20%;">Native Hawaiian or Other Pacific Islander</td>
+<td style="text-align: right; width: 10%;">2</td>
+<td style="text-align: right; width: 10%;">5.56</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 20%;">Decline to state</td>
+<td style="text-align: right; width: 10%;">1</td>
+<td style="text-align: right; width: 10%;">2.78</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 20%;">Other (write-in)</td>
+<td style="text-align: right; width: 10%;">1</td>
+<td style="text-align: right; width: 10%;">2.78</td>
+</tr>
+</tbody>
+</table>
+<br>
+
+<table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Gender Identity</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Count</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Percentage (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 20%;">Woman</td>
+<td style="text-align: right; width: 10%;">20</td>
+<td style="text-align: right; width: 10%;">55.56</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 20%;">Man</td>
+<td style="text-align: right; width: 10%;">14</td>
+<td style="text-align: right; width: 10%;">38.89</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 20%;">Decline to state</td>
+<td style="text-align: right; width: 10%;">1</td>
+<td style="text-align: right; width: 10%;">2.78</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 20%;">Gender fluid/queer/non-conforming</td>
+<td style="text-align: right; width: 10%;">1</td>
+<td style="text-align: right; width: 10%;">2.78</td>
+</tr>
+</tbody>
+</table>
+<br>
+
+<table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Role</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Count</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Percentage (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 20%;">Faculty</td>
+<td style="text-align: right; width: 10%;">14</td>
+<td style="text-align: right; width: 10%;">38.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 20%;">Graduate student (second-year or above)</td>
+<td style="text-align: right; width: 10%;">13</td>
+<td style="text-align: right; width: 10%;">36.11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 20%;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: right; width: 10%;">5</td>
+<td style="text-align: right; width: 10%;">13.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 20%;">First-year graduate student</td>
+<td style="text-align: right; width: 10%;">3</td>
+<td style="text-align: right; width: 10%;">8.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 20%;">Undergraduate</td>
+<td style="text-align: right; width: 10%;">1</td>
+<td style="text-align: right; width: 10%;">2.78</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="faceting" class="level2">
+<h2 class="anchored" data-anchor-id="faceting">Faceting</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>personal_prefix <span class="ot">&lt;-</span> <span class="st">"Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank...__________About......Personal.impacts..."</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>professional_prefix <span class="ot">&lt;-</span> <span class="st">"Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank.....__________Abo......Academic.and.or.professional.impacts..."</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>race_prefix <span class="ot">&lt;-</span> <span class="st">'What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice'</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>remove_prefix <span class="ot">&lt;-</span> <span class="cf">function</span>(column_name, prefix_to_remove) {</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  column_name <span class="ot">&lt;-</span> <span class="fu">gsub</span>(prefix_to_remove, <span class="st">""</span>, column_name)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(column_name)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>personal_concern_columns <span class="ot">&lt;-</span> <span class="fu">grep</span>(personal_prefix, <span class="fu">names</span>(data), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>professional_concern_columns <span class="ot">&lt;-</span> <span class="fu">grep</span>(professional_prefix, <span class="fu">names</span>(data), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>race_columns <span class="ot">&lt;-</span> <span class="fu">grep</span>(race_prefix, <span class="fu">names</span>(data), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>cleaned_personal_column_names <span class="ot">&lt;-</span> <span class="fu">lapply</span>(personal_concern_columns, remove_prefix, <span class="at">prefix_to_remove =</span> personal_prefix)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>cleaned_professional_column_names <span class="ot">&lt;-</span> <span class="fu">lapply</span>(professional_concern_columns, remove_prefix, <span class="at">prefix_to_remove =</span> professional_prefix)</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>df_personal <span class="ot">&lt;-</span> data[<span class="fu">c</span>(personal_concern_columns, race_columns)]</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>df_professional <span class="ot">&lt;-</span> data[<span class="fu">c</span>(professional_concern_columns,race_columns)]</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df_personal) <span class="ot">&lt;-</span> <span class="fu">c</span>(cleaned_personal_column_names, <span class="st">'Race_Ethnicity'</span>)</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df_professional) <span class="ot">&lt;-</span> <span class="fu">c</span>(cleaned_professional_column_names, <span class="st">'Race_Ethnicity'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_personal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Food..nutrition Housing Health..medical Finances..paying.bills
+1               1       1             1,2                    1,2
+2               0       0               0                      0
+3               0       0               2                      0
+4               0       2               2                      2
+5               0       0               0                      1
+6               0       0               1                      1
+  General.well.being Mental.health Living.conditions
+1                1,2           1,2                 1
+2                  2           1,2                 0
+3                  2             2                 0
+4                  2             0                 0
+5                  0             2                 0
+6                  1             1                 0
+  Distance.from.family..friends Relationships.with.others Childcare
+1                           1,2                       1,2         0
+2                             2                         2         0
+3                             2                         0         0
+4                             2                         0         0
+5                             1                         2         0
+6                             0                         2         0
+  Education.for.children     Race_Ethnicity
+1                    1,2              White
+2                      0              White
+3                      0              White
+4                      0 Hispanic or Latinx
+5                      0 Hispanic or Latinx
+6                      0 Hispanic or Latinx</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df_personal[] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_personal[], as.character)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>personal_data_long <span class="ot">&lt;-</span> df_personal <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(General.well.being, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(Race_Ethnicity, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">General.well.being =</span> <span class="fu">as.integer</span>(General.well.being))</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="ot">&lt;-</span> personal_data_long <span class="sc">%&gt;%</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Race_Ethnicity) <span class="sc">%&gt;%</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid =</span> <span class="fu">sum</span>(General.well.being <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid =</span> <span class="fu">sum</span>(General.well.being <span class="sc">==</span> <span class="dv">2</span>)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="ot">&lt;-</span> concern_counts <span class="sc">%&gt;%</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">difference =</span> post_covid <span class="sc">-</span> pre_covid)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> difference, <span class="at">y =</span> difference, <span class="at">fill =</span> Race_Ethnicity)) <span class="sc">+</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity"</span>,</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Difference in Concerns (Post - Pre)"</span>) <span class="sc">+</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Pre-COVID Concerns"</span>, <span class="st">"Post-COVID Concerns"</span>, <span class="st">"Difference (Post - Pre)"</span>), </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
+<caption>Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Race/Ethnicity</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Pre-COVID Concerns</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Post-COVID Concerns</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Difference (Post - Pre)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Asian</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Black or African American</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Decline to state</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hispanic or Latinx</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mixed Race (two or more races)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Native Hawaiian or Other Pacific Islander</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Other (write-in)</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">8</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df_professional[] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_professional[], as.character)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>personal_data_long <span class="ot">&lt;-</span> df_professional <span class="sc">%&gt;%</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(Professional.development..internships..programs..conferences., <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(Race_Ethnicity, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">General.well.being =</span> <span class="fu">as.integer</span>(Professional.development..internships..programs..conferences.))</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>total_counts <span class="ot">&lt;-</span> personal_data_long <span class="sc">%&gt;%</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Race_Ethnicity) <span class="sc">%&gt;%</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total =</span> <span class="fu">n</span>())</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="ot">&lt;-</span> personal_data_long <span class="sc">%&gt;%</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Race_Ethnicity) <span class="sc">%&gt;%</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid =</span> <span class="fu">sum</span>(Professional.development..internships..programs..conferences. <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid =</span> <span class="fu">sum</span>(Professional.development..internships..programs..conferences. <span class="sc">==</span> <span class="dv">2</span>)</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(total_counts, <span class="at">by =</span> <span class="st">"Race_Ethnicity"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid_prop =</span> <span class="fu">round</span>((pre_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid_prop =</span> <span class="fu">round</span>((post_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">difference =</span> <span class="fu">round</span>(post_covid_prop <span class="sc">-</span> pre_covid_prop, <span class="dv">2</span>)</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="sc">%&gt;%</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Race_Ethnicity, pre_covid_prop, post_covid_prop, difference) <span class="sc">%&gt;%</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Pre-COVID Proportion (%)"</span>, <span class="st">"Post-COVID Proportion (%)"</span>, <span class="st">"Difference (Post - Pre)"</span>), </span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Difference in Post-Pre COVID Concerns for Professional Development (Proportions)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
+<caption>Difference in Post-Pre COVID Concerns for Professional Development (Proportions)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Race/Ethnicity</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Pre-COVID Proportion (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Post-COVID Proportion (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Difference (Post - Pre)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Asian</td>
+<td style="text-align: right;">37.50</td>
+<td style="text-align: right;">37.50</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Black or African American</td>
+<td style="text-align: right;">66.67</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">-33.34</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Decline to state</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">100.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hispanic or Latinx</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">66.67</td>
+<td style="text-align: right;">66.67</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mixed Race (two or more races)</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">16.67</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Native Hawaiian or Other Pacific Islander</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Other (write-in)</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">50.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">11.54</td>
+<td style="text-align: right;">61.54</td>
+<td style="text-align: right;">50.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Race_Ethnicity, <span class="at">y =</span> difference, <span class="at">fill =</span> Race_Ethnicity)) <span class="sc">+</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Proportion of Professional Development by Race"</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Difference in Proportion (Post - Pre)"</span>) <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>(), </span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks.x=</span><span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df_personal[] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_personal[], as.character)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>personal_data_long <span class="ot">&lt;-</span> df_personal <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(General.well.being, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(Race_Ethnicity, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">General.well.being =</span> <span class="fu">as.integer</span>(General.well.being))</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>total_counts <span class="ot">&lt;-</span> personal_data_long <span class="sc">%&gt;%</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Race_Ethnicity) <span class="sc">%&gt;%</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total =</span> <span class="fu">n</span>())</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="ot">&lt;-</span> personal_data_long <span class="sc">%&gt;%</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Race_Ethnicity) <span class="sc">%&gt;%</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid =</span> <span class="fu">sum</span>(General.well.being <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid =</span> <span class="fu">sum</span>(General.well.being <span class="sc">==</span> <span class="dv">2</span>)</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(total_counts, <span class="at">by =</span> <span class="st">"Race_Ethnicity"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid_prop =</span> <span class="fu">round</span>((pre_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid_prop =</span> <span class="fu">round</span>((post_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">difference =</span> <span class="fu">round</span>(post_covid_prop <span class="sc">-</span> pre_covid_prop, <span class="dv">2</span>)</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="sc">%&gt;%</span></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Race_Ethnicity, pre_covid_prop, post_covid_prop, difference) <span class="sc">%&gt;%</span></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Pre-COVID Proportion (%)"</span>, <span class="st">"Post-COVID Proportion (%)"</span>, <span class="st">"Difference (Post - Pre)"</span>), </span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity (Proportions)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
+<caption>Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity (Proportions)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Race/Ethnicity</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Pre-COVID Proportion (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Post-COVID Proportion (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Difference (Post - Pre)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Asian</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">40.00</td>
+<td style="text-align: right;">20.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Black or African American</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Decline to state</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hispanic or Latinx</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mixed Race (two or more races)</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">66.67</td>
+<td style="text-align: right;">33.34</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Native Hawaiian or Other Pacific Islander</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Other (write-in)</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">16.00</td>
+<td style="text-align: right;">48.00</td>
+<td style="text-align: right;">32.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Race_Ethnicity, <span class="at">y =</span> difference, <span class="at">fill =</span> Race_Ethnicity)) <span class="sc">+</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Proportion of Generall Well Being by Race"</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Difference in Proportion (Post - Pre)"</span>) <span class="sc">+</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>(), </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks.x=</span><span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="try-by-role" class="level2">
+<h2 class="anchored" data-anchor-id="try-by-role">Try By Role</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>personal_prefix <span class="ot">&lt;-</span> <span class="st">"Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank...__________About......Personal.impacts..."</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>professional_prefix <span class="ot">&lt;-</span> <span class="st">"Currently..are.you.concerned.about.the.following....If.you.are.not..leave.blank.....__________Abo......Academic.and.or.professional.impacts..."</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>remove_prefix <span class="ot">&lt;-</span> <span class="cf">function</span>(column_name, prefix_to_remove) {</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  column_name <span class="ot">&lt;-</span> <span class="fu">gsub</span>(prefix_to_remove, <span class="st">""</span>, column_name)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(column_name)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>personal_concern_columns <span class="ot">&lt;-</span> <span class="fu">grep</span>(personal_prefix, <span class="fu">names</span>(data), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>professional_concern_columns <span class="ot">&lt;-</span> <span class="fu">grep</span>(professional_prefix, <span class="fu">names</span>(data), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>cleaned_personal_column_names <span class="ot">&lt;-</span> <span class="fu">lapply</span>(personal_concern_columns, remove_prefix, <span class="at">prefix_to_remove =</span> personal_prefix)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>cleaned_professional_column_names <span class="ot">&lt;-</span> <span class="fu">lapply</span>(professional_concern_columns, remove_prefix, <span class="at">prefix_to_remove =</span> professional_prefix)</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>df_personal <span class="ot">&lt;-</span> data[<span class="fu">c</span>(personal_concern_columns, <span class="st">"Role"</span>)]</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>df_professional <span class="ot">&lt;-</span> data[<span class="fu">c</span>(professional_concern_columns,<span class="st">"Role"</span>)]</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df_personal) <span class="ot">&lt;-</span> <span class="fu">c</span>(cleaned_personal_column_names, <span class="st">'Role'</span>)</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df_professional) <span class="ot">&lt;-</span> <span class="fu">c</span>(cleaned_professional_column_names, <span class="st">'Role'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df_professional <span class="ot">&lt;-</span> df_professional <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"Other..write.in."</span>))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>professional_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Learning environment"</span>, <span class="st">"Completing education"</span>, <span class="st">"Decisions about graduate school"</span>, <span class="st">"Other education-related"</span>, <span class="st">"Professional development"</span>, <span class="st">"Finding a job"</span>, <span class="st">"Keeping current job"</span>, <span class="st">"Telework tools"</span>, <span class="st">"Telework productivity"</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>df_professional[] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_professional[], as.character)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>professional_columns <span class="ot">&lt;-</span> <span class="fu">names</span>(df_professional)[<span class="sc">-</span><span class="fu">which</span>(<span class="fu">names</span>(df_professional) <span class="sc">==</span> <span class="st">"Role"</span>)]</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>personal_data_long <span class="ot">&lt;-</span> df_professional <span class="sc">%&gt;%</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(Role, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">all_of</span>(professional_columns), </span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"Professional_Development"</span>, </span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"Concern"</span>,) <span class="sc">%&gt;%</span></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(Concern, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Concern =</span> <span class="fu">as.integer</span>(Concern)) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Professional_Development =</span> <span class="fu">recode</span>(Professional_Development, <span class="sc">!!!</span><span class="fu">setNames</span>(professional_labels, professional_columns)))</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>total_counts <span class="ot">&lt;-</span> personal_data_long <span class="sc">%&gt;%</span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Role, Professional_Development) <span class="sc">%&gt;%</span></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">'drop'</span>)</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="ot">&lt;-</span> personal_data_long <span class="sc">%&gt;%</span></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Role, Professional_Development) <span class="sc">%&gt;%</span></span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid =</span> <span class="fu">sum</span>(Concern <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid =</span> <span class="fu">sum</span>(Concern <span class="sc">==</span> <span class="dv">2</span>),</span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">'drop'</span></span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(total_counts, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Role"</span>, <span class="st">"Professional_Development"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid_prop =</span> <span class="fu">round</span>((pre_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid_prop =</span> <span class="fu">round</span>((post_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">difference =</span> <span class="fu">round</span>(post_covid_prop <span class="sc">-</span> pre_covid_prop, <span class="dv">2</span>)</span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="sc">%&gt;%</span></span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Role, Professional_Development, pre_covid_prop, post_covid_prop, difference) <span class="sc">%&gt;%</span></span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Role"</span>, <span class="st">"Professional Development"</span>, <span class="st">"Pre-COVID Proportion (%)"</span>, <span class="st">"Post-COVID Proportion (%)"</span>, <span class="st">"Difference (Post - Pre)"</span>), </span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Difference in Post-Pre COVID Concerns for Professional Development (Proportions)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
+<caption>Difference in Post-Pre COVID Concerns for Professional Development (Proportions)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Role</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Professional Development</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Pre-COVID Proportion (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Post-COVID Proportion (%)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Difference (Post - Pre)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: left;">Completing education</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: left;">Decisions about graduate school</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: left;">Finding a job</td>
+<td style="text-align: right;">14.29</td>
+<td style="text-align: right;">14.29</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: left;">Keeping current job</td>
+<td style="text-align: right;">14.29</td>
+<td style="text-align: right;">28.57</td>
+<td style="text-align: right;">14.28</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: left;">Learning environment</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">20.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: left;">Other education-related</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: left;">Professional development</td>
+<td style="text-align: right;">12.50</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">37.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: left;">Telework productivity</td>
+<td style="text-align: right;">14.29</td>
+<td style="text-align: right;">71.43</td>
+<td style="text-align: right;">57.14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Employee (including Postdoctoral Scholars)</td>
+<td style="text-align: left;">Telework tools</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">60.00</td>
+<td style="text-align: right;">60.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Faculty</td>
+<td style="text-align: left;">Completing education</td>
+<td style="text-align: right;">14.29</td>
+<td style="text-align: right;">7.14</td>
+<td style="text-align: right;">-7.15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Faculty</td>
+<td style="text-align: left;">Decisions about graduate school</td>
+<td style="text-align: right;">28.57</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-28.57</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Faculty</td>
+<td style="text-align: left;">Finding a job</td>
+<td style="text-align: right;">7.14</td>
+<td style="text-align: right;">14.29</td>
+<td style="text-align: right;">7.15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Faculty</td>
+<td style="text-align: left;">Keeping current job</td>
+<td style="text-align: right;">21.43</td>
+<td style="text-align: right;">28.57</td>
+<td style="text-align: right;">7.14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Faculty</td>
+<td style="text-align: left;">Learning environment</td>
+<td style="text-align: right;">13.33</td>
+<td style="text-align: right;">73.33</td>
+<td style="text-align: right;">60.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Faculty</td>
+<td style="text-align: left;">Other education-related</td>
+<td style="text-align: right;">14.29</td>
+<td style="text-align: right;">21.43</td>
+<td style="text-align: right;">7.14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Faculty</td>
+<td style="text-align: left;">Professional development</td>
+<td style="text-align: right;">23.53</td>
+<td style="text-align: right;">41.18</td>
+<td style="text-align: right;">17.65</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Faculty</td>
+<td style="text-align: left;">Telework productivity</td>
+<td style="text-align: right;">6.67</td>
+<td style="text-align: right;">46.67</td>
+<td style="text-align: right;">40.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Faculty</td>
+<td style="text-align: left;">Telework tools</td>
+<td style="text-align: right;">13.33</td>
+<td style="text-align: right;">53.33</td>
+<td style="text-align: right;">40.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">First-year graduate student</td>
+<td style="text-align: left;">Completing education</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">25.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">First-year graduate student</td>
+<td style="text-align: left;">Decisions about graduate school</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">33.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">First-year graduate student</td>
+<td style="text-align: left;">Finding a job</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-33.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">First-year graduate student</td>
+<td style="text-align: left;">Keeping current job</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-33.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">First-year graduate student</td>
+<td style="text-align: left;">Learning environment</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">First-year graduate student</td>
+<td style="text-align: left;">Other education-related</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">First-year graduate student</td>
+<td style="text-align: left;">Professional development</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">First-year graduate student</td>
+<td style="text-align: left;">Telework productivity</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">First-year graduate student</td>
+<td style="text-align: left;">Telework tools</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-33.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Graduate student (second-year or above)</td>
+<td style="text-align: left;">Completing education</td>
+<td style="text-align: right;">21.43</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">28.57</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Graduate student (second-year or above)</td>
+<td style="text-align: left;">Decisions about graduate school</td>
+<td style="text-align: right;">7.69</td>
+<td style="text-align: right;">23.08</td>
+<td style="text-align: right;">15.39</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Graduate student (second-year or above)</td>
+<td style="text-align: left;">Finding a job</td>
+<td style="text-align: right;">14.29</td>
+<td style="text-align: right;">42.86</td>
+<td style="text-align: right;">28.57</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Graduate student (second-year or above)</td>
+<td style="text-align: left;">Keeping current job</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">7.69</td>
+<td style="text-align: right;">7.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Graduate student (second-year or above)</td>
+<td style="text-align: left;">Learning environment</td>
+<td style="text-align: right;">13.33</td>
+<td style="text-align: right;">53.33</td>
+<td style="text-align: right;">40.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Graduate student (second-year or above)</td>
+<td style="text-align: left;">Other education-related</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Graduate student (second-year or above)</td>
+<td style="text-align: left;">Professional development</td>
+<td style="text-align: right;">7.14</td>
+<td style="text-align: right;">71.43</td>
+<td style="text-align: right;">64.29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Graduate student (second-year or above)</td>
+<td style="text-align: left;">Telework productivity</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">76.92</td>
+<td style="text-align: right;">76.92</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Graduate student (second-year or above)</td>
+<td style="text-align: left;">Telework tools</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">53.85</td>
+<td style="text-align: right;">53.85</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Undergraduate</td>
+<td style="text-align: left;">Completing education</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Undergraduate</td>
+<td style="text-align: left;">Decisions about graduate school</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-100.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Undergraduate</td>
+<td style="text-align: left;">Finding a job</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Undergraduate</td>
+<td style="text-align: left;">Keeping current job</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Undergraduate</td>
+<td style="text-align: left;">Learning environment</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">100.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Undergraduate</td>
+<td style="text-align: left;">Other education-related</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">50.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Undergraduate</td>
+<td style="text-align: left;">Professional development</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Undergraduate</td>
+<td style="text-align: left;">Telework productivity</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">50.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Undergraduate</td>
+<td style="text-align: left;">Telework tools</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">100.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Role, <span class="at">y =</span> difference, <span class="at">fill =</span> Role)) <span class="sc">+</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Professional_Development, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Proportion of COVID Concerns by Role Faceted by Professional Devlopement Category"</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Role"</span>, <span class="at">y =</span> <span class="st">"Difference in Proportion (Post - Pre)"</span>) <span class="sc">+</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#       legend.position = "none")</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>(), </span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks.x=</span><span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Professional_Development, <span class="at">y =</span> difference, <span class="at">fill =</span> Professional_Development)) <span class="sc">+</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Role, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Proportion of COVID Concerns by Professional Development Category Faceted by Role"</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Difference in Proportion (Post - Pre)"</span>) <span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>(), </span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks.x=</span><span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Professional_Development, <span class="at">y =</span> difference, <span class="at">fill =</span> Role)) <span class="sc">+</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge2"</span>) <span class="sc">+</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Proportion of COVID Concerns by Professional Development Category and Role"</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Difference in Proportion (Post - Pre)"</span>) <span class="sc">+</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

@@ -165,6 +165,7 @@ render_summary_table_graph <- function(df, column, category_name) {
   total <- nrow(df)
   
   summary_df <- df %>%
+    mutate({{column}} := ifelse({{column}} == "Genderfluid, Genderqueer, or Gender Non-conforming","Genderfluid/Genderqueer/Gender non-conforming", {{column}})) %>%
     separate_rows({{column}}, sep = ",") %>%
     count({{column}}, name = "count") %>%
     mutate(percentage = round((count / total) * 100, 2)) %>%
@@ -186,7 +187,7 @@ render_summary_table_graph <- function(df, column, category_name) {
           axis.title.y = element_text(margin = margin(r = 20)),
           plot.title = element_text(hjust = 0.5, face = "bold", size = 18)) +
     scale_fill_brewer(palette = "Set3")
-  print(graph)
+  return(list(summary_table = summary_table, graph = graph))
 }
 
 render_summary_table_graph(data, `What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice`, "Race/Ethnicity")
@@ -194,6 +195,59 @@ render_summary_table_graph(data, `How.would.you.describe.yourself...Mark.one.ans
 # render_summary_table_graph(data, `Institution.Type`, "Institution Type")
 render_summary_table_graph(data, Role, "Role")
 ```
+
+
+```{r}
+library(htmltools)
+generate_summary_table <- function(df, column, category_name) {
+  total <- nrow(df)
+  
+  # Handling specific category name issue
+  summary_df <- df %>%
+    mutate({{column}} := ifelse({{column}} == "Genderfluid, Genderqueer, or Gender Non-conforming","Gender fluid/queer/non-conforming", {{column}})) %>%
+    separate_rows({{column}}, sep = ",") %>%
+    count({{column}}, name = "count") %>%
+    mutate(percentage = round((count / total) * 100, 2)) %>%
+    rename(Category = {{column}}) %>%
+    arrange(desc(count))
+  
+  return(summary_df)
+}
+
+summary_df_race_ethnicity <- generate_summary_table(data, `What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice`, "Race/Ethnicity")
+summary_df_gender_identity <- generate_summary_table(data, `How.would.you.describe.yourself...Mark.one.answer....Selected.Choice`, "Gender Identity")
+summary_df_role <- generate_summary_table(data, Role, "Role")
+
+formatted_table_race_ethnicity <- summary_df_race_ethnicity %>%
+  kable(format = "html", col.names = c("Race/Ethnicity", "Count", "Percentage (%)")) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed")) %>%
+  column_spec(1, width = "20%") %>%
+  column_spec(2:3, width = "10%", extra_css = "text-align: right;")
+
+formatted_table_gender_identity <- summary_df_gender_identity %>%
+  kable(format = "html", col.names = c("Gender Identity", "Count", "Percentage (%)")) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed")) %>%
+  column_spec(1, width = "20%") %>%
+  column_spec(2:3, width = "10%", extra_css = "text-align: right;")
+
+formatted_table_role <- summary_df_role %>%
+  kable(format = "html", col.names = c("Role", "Count", "Percentage (%)")) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed")) %>%
+  column_spec(1, width = "20%") %>%
+  column_spec(2:3, width = "10%", extra_css = "text-align: right;")
+combined_table <- paste(
+  "<h1 style='text-align: center;'>Demographics</h1>",
+  "<br>",
+  as.character(formatted_table_race_ethnicity),
+  "<br>",
+  as.character(formatted_table_gender_identity),
+  "<br>",
+  as.character(formatted_table_role),
+  sep = ""
+)
+HTML(combined_table)
+```
+
 
 ## Faceting
 
@@ -370,6 +424,7 @@ names(df_professional) <- c(cleaned_professional_column_names, 'Role')
 ```{r}
 df_professional <- df_professional %>%
   select(-starts_with("Other..write.in."))
+professional_labels <- c("Learning environment", "Completing education", "Decisions about graduate school", "Other education-related", "Professional development", "Finding a job", "Keeping current job", "Telework tools", "Telework productivity")
 
 df_professional[] <- lapply(df_professional[], as.character)
 
@@ -380,9 +435,10 @@ personal_data_long <- df_professional %>%
   separate_rows(Role, sep = ",") %>%
   pivot_longer(cols = all_of(professional_columns), 
                names_to = "Professional_Development", 
-               values_to = "Concern") %>%
+               values_to = "Concern",) %>%
   separate_rows(Concern, sep = ",") %>%
-  mutate(Concern = as.integer(Concern))
+  mutate(Concern = as.integer(Concern)) %>% 
+  mutate(Professional_Development = recode(Professional_Development, !!!setNames(professional_labels, professional_columns)))
 
 total_counts <- personal_data_long %>%
   group_by(Role, Professional_Development) %>%
@@ -413,7 +469,7 @@ concern_counts %>%
 ggplot(concern_counts, aes(x = Role, y = difference, fill = Role)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ Professional_Development, scales = "free_y") +
-  labs(title = "Difference in Proportion of COVID Concerns by Professional Development Category",
+  labs(title = "Difference in Proportion of COVID Concerns by Role Faceted by Professional Devlopement Category",
        x = "Role", y = "Difference in Proportion (Post - Pre)") +
   theme_minimal() +
   # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
@@ -427,7 +483,7 @@ ggplot(concern_counts, aes(x = Professional_Development, y = difference, fill = 
   geom_bar(stat = "identity") +
   facet_wrap(~ Role, scales = "free_y") +
   labs(title = "Difference in Proportion of COVID Concerns by Professional Development Category Faceted by Role",
-       x = "Role", y = "Difference in Proportion (Post - Pre)") +
+       x = "", y = "Difference in Proportion (Post - Pre)") +
   theme_minimal() +
   theme(axis.text.x=element_blank(), 
         axis.ticks.x=element_blank())
