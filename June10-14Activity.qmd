@@ -292,6 +292,16 @@ concern_counts %>%
 ```
 
 ```{r}
+ggplot(concern_counts, aes(x = Race_Ethnicity, y = difference, fill = Race_Ethnicity)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Difference in Proportion of Professional Development by Race",
+       x = "", y = "Difference in Proportion (Post - Pre)") +
+  theme_minimal() +
+  theme(axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank())
+```
+
+```{r}
 df_personal[] <- lapply(df_personal[], as.character)
 
 personal_data_long <- df_personal %>%
@@ -322,6 +332,16 @@ concern_counts %>%
   kable(col.names = c("Race/Ethnicity", "Pre-COVID Proportion (%)", "Post-COVID Proportion (%)", "Difference (Post - Pre)"), 
         caption = "Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity (Proportions)") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+```{r}
+ggplot(concern_counts, aes(x = Race_Ethnicity, y = difference, fill = Race_Ethnicity)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Difference in Proportion of Generall Well Being by Race",
+       x = "", y = "Difference in Proportion (Post - Pre)") +
+  theme_minimal() +
+  theme(axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank())
 ```
 
 ## Try By Role
@@ -396,6 +416,28 @@ ggplot(concern_counts, aes(x = Role, y = difference, fill = Role)) +
   labs(title = "Difference in Proportion of COVID Concerns by Professional Development Category",
        x = "Role", y = "Difference in Proportion (Post - Pre)") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-        legend.position = "none")
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+  #       legend.position = "none")
+  theme(axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank())
+```
+
+```{r}
+ggplot(concern_counts, aes(x = Professional_Development, y = difference, fill = Professional_Development)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Role, scales = "free_y") +
+  labs(title = "Difference in Proportion of COVID Concerns by Professional Development Category Faceted by Role",
+       x = "Role", y = "Difference in Proportion (Post - Pre)") +
+  theme_minimal() +
+  theme(axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank())
+```
+
+```{r}
+ggplot(concern_counts, aes(x = Professional_Development, y = difference, fill = Role)) +
+  geom_bar(stat = "identity", position = "dodge2") +
+  labs(title = "Difference in Proportion of COVID Concerns by Professional Development Category and Role",
+       x = "", y = "Difference in Proportion (Post - Pre)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
