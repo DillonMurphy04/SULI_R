@@ -10,6 +10,11 @@ editor: visual
 library(tidyverse)
 library(tibble)
 library(kableExtra)
+library(tidytext)
+library(stringr)
+library(SnowballC)
+library(patchwork)
+
 data <- read.csv("data_snippet.csv")
 ```
 
@@ -97,11 +102,11 @@ df_personal_long <- filtered_aggregate_personal %>%
 type_order <- c("Pre_COVID_Count", "New_COVID_Count")
 df_personal_long$Type <- factor(df_personal_long$Type, levels = type_order)
 
-ggplot(df_personal_long, aes(x = Concern_Category, y = Count, fill = Type)) +
+plot_personal <- ggplot(df_personal_long, aes(x = fct_reorder(Concern_Category, Count, .desc = TRUE), y = Count, fill = Type)) +
   geom_bar(stat = "identity", position = position_dodge()) +
   scale_fill_manual(values = c("skyblue", "orange"), 
                     labels = c("Pre-COVID Issue", "New Issue due to COVID")) +
-  labs(title = "Distribution of Pre-COVID and New COVID Issues (Personal)",
+  labs(title = "Personal",
        x = "", y = "Count", fill = "Issue Type") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
@@ -121,14 +126,60 @@ df_professional_long <- filtered_aggregate_professional %>%
 type_order <- c("Pre_COVID_Count", "New_COVID_Count")
 df_professional_long$Type <- factor(df_professional_long$Type, levels = type_order)
 
-ggplot(df_professional_long, aes(x = Concern_Category, y = Count, fill = Type)) +
+plot_professional <- ggplot(df_professional_long, aes(x = fct_reorder(Concern_Category, Count, .desc = TRUE), y = Count, fill = Type)) +
   geom_bar(stat = "identity", position = position_dodge()) +
   scale_fill_manual(values = c("skyblue", "orange"), 
                     labels = c("Pre-COVID Issue", "New Issue due to COVID")) +
-  labs(title = "Distribution of Pre-COVID and New COVID Issues (Professional)",
-       x = "", y = "Count", fill = "Issue Type") +
+  labs(title = "Professional",
+       x = "", y = "", fill = "Issue Type") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r}
+combined_plots <- plot_personal + plot_professional +
+  plot_layout(guides = "collect") &
+  plot_annotation(
+    title = "Distribution of Pre-COVID & New Covid Issues",
+    caption = "Fig. 1. Bar charts of concern levels for professional and personal impacts revealing dramatic increase in majority of issues",
+    theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
+  )
+
+combined_plots
+```
+
+```{r}
+color_palette <- c("#CCCCCC", "#666666") 
+plot_personal <- ggplot(df_personal_long, aes(x = Count, y = fct_reorder(Concern_Category, Count, .desc = FALSE), fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  scale_fill_manual(values = color_palette, 
+                    labels = c("Pre-COVID Issue", "New Issue due to COVID")) +
+  labs(title = "Personal",
+       x = "", y = "", fill = "Issue Type") +
+  theme_minimal() +
+    theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        plot.title = element_text(vjust = -1, margin = margin(b = -20))) +
+  xlim(0,25)
+
+plot_professional <- ggplot(df_professional_long, aes(x = Count, y = fct_reorder(Concern_Category, Count, .desc = FALSE), fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  scale_fill_manual(values = color_palette, 
+                    labels = c("Pre-COVID Issue", "New Issue due to COVID")) +
+  labs(title = "Professional",
+       x = "", y = "", fill = "Issue Type") +
+  theme_minimal() +
+  xlim(0,25)
+
+combined_plots <- plot_personal / plot_professional +
+  plot_layout(guides = "collect") &
+  plot_annotation(
+    title = "Distribution of Pre-COVID & New Covid Issues",
+    caption = "Fig. 1. Bar charts of concern levels for professional and personal impacts revealing dramatic increase in majority of issues",
+    theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
+  ) & theme(legend.position = 'top')
+
+combined_plots
 ```
 
 ## Demographics Visualizations
@@ -196,7 +247,6 @@ render_summary_table_graph(data, `How.would.you.describe.yourself...Mark.one.ans
 render_summary_table_graph(data, Role, "Role")
 ```
 
-
 ```{r}
 library(htmltools)
 generate_summary_table <- function(df, column, category_name) {
@@ -236,18 +286,14 @@ formatted_table_role <- summary_df_role %>%
   column_spec(1, width = "20%") %>%
   column_spec(2:3, width = "10%", extra_css = "text-align: right;")
 combined_table <- paste(
-  "<h1 style='text-align: center;'>Demographics</h1>",
-  "<br>",
+  "<h2 style='text-align: left; font-size: 12pt;'>Table 1: Respondent Demographic Information (N=36)</h2>",
   as.character(formatted_table_race_ethnicity),
-  "<br>",
   as.character(formatted_table_gender_identity),
-  "<br>",
   as.character(formatted_table_role),
   sep = ""
 )
 HTML(combined_table)
 ```
-
 
 ## Faceting
 
@@ -494,4 +540,95 @@ ggplot(concern_counts, aes(x = Professional_Development, y = difference, fill = 
        x = "", y = "Difference in Proportion (Post - Pre)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+## Feeling Supported vs Professional Development
+
+```{r}
+df_professional$supported <- data$Did.you.feel.supported.from.your.institution..department..team..etc...
+
+personal_data_long <- df_professional %>%
+  mutate(id = row_number()) %>%
+  separate_rows(supported, sep = ",") %>%
+  pivot_longer(cols = all_of(professional_columns), 
+               names_to = "Professional_Development", 
+               values_to = "Concern") %>%
+  separate_rows(Concern, sep = ",") %>%
+  mutate(Concern = as.integer(Concern)) %>%
+  mutate(Professional_Development = recode(Professional_Development, !!!setNames(professional_labels, professional_columns)))
+
+total_counts <- personal_data_long %>%
+  group_by(supported, Professional_Development) %>%
+  summarize(total = n(), .groups = 'drop')
+
+concern_counts <- personal_data_long %>%
+  group_by(supported, Professional_Development) %>%
+  summarize(
+    pre_covid = sum(Concern == 1),
+    post_covid = sum(Concern == 2),
+    .groups = 'drop'
+  ) %>%
+  left_join(total_counts, by = c("supported", "Professional_Development")) %>%
+  mutate(
+    pre_covid_prop = round((pre_covid / total) * 100, 2),
+    post_covid_prop = round((post_covid / total) * 100, 2)
+  )
+
+concern_counts %>%
+  select(supported, Professional_Development, pre_covid_prop, post_covid_prop) %>%
+  kable(col.names = c("Supported", "Professional Development", "Pre-COVID Proportion (%)", "New COVID Proportion (%)"), 
+        caption = "Pre and New COVID Concerns for Professional Development by Support (Proportions)") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+```{r}
+ggplot(concern_counts, aes(x = supported, y = post_covid_prop, fill = supported)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Professional_Development, scales = "free_y") +
+  labs(title = "Proportion of New COVID Concerns by Feelings of Support From  Institution Faceted by Professional Development Category",
+       x = "", y = "Difference in Proportion (Post - Pre)") +
+  theme_minimal() +
+  theme(axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank())
+```
+
+## Checking Written Responses
+
+```{r}
+word_data <- data.frame(
+  helpful = data$Related.to.COVID.19..what.information.have.you.received.from.this.institution.that.has.been.most.HELPFUL.to.you..in.terms.of.your.own.studies..work..and.or.projects....Note..This.could.be.via.email..printed..etc.,
+  unhelpful = data$Related.to.COVID.19..what.information.have.you.received.from.this.institution.that.has.been.most.UNHELPFUL.to.you..in.terms.of.your.own.studies..work..and.or.projects....Note..This.could.be.via.email..printed..etc.
+)
+
+responses <- word_data %>%
+  pivot_longer(cols = c(helpful, unhelpful), 
+               names_to = "Type", 
+               values_to = "Response") %>%
+  filter(!is.na(Response))
+
+responses_tokens <- responses %>%
+  unnest_tokens(word, Response) %>%
+  filter(!word %in% stop_words$word) %>%
+  filter(!str_detect(word, "^[0-9]+$"))
+
+responses_tokens <- responses_tokens %>%
+  mutate(word = wordStem(word, language = "en"))
+
+word_counts <- responses_tokens %>%
+  count(Type, word, sort = TRUE)
+
+top_words <- word_counts %>%
+  group_by(Type) %>%
+  slice_max(n, n = 10)
+
+ggplot(top_words, aes(x = reorder_within(word, n, Type), y = n, fill = Type)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~Type, scales = "free_y") +
+  scale_x_reordered() +
+  labs(y = "Frequency", x = "Words", title = "Most Common Words in Helpful and Unhelpful Responses") +
+  coord_flip()
+
+top_words %>%
+  arrange(Type, desc(n)) %>%
+  print()
 ```
