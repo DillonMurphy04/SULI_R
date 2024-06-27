@@ -293,10 +293,10 @@ concern_counts <- personal_data_long %>%
     pre_covid = sum(General.well.being == 1),
     post_covid = sum(General.well.being == 2)
   )
-concern_counts <- concern_counts %>%
+concern_counts2 <- concern_counts %>%
   mutate(difference = post_covid - pre_covid)
 
-ggplot(concern_counts, aes(x = difference, y = difference, fill = Race_Ethnicity)) +
+ggplot(concern_counts2, aes(x = difference, y = difference, fill = Race_Ethnicity)) +
   geom_bar(stat = "identity") +
   labs(title = "Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity",
        x = "Race/Ethnicity",
@@ -307,8 +307,8 @@ ggplot(concern_counts, aes(x = difference, y = difference, fill = Race_Ethnicity
 
 ```{r}
 concern_counts %>%
-  kable(col.names = c("Race/Ethnicity", "Pre-COVID Concerns", "Post-COVID Concerns", "Difference (Post - Pre)"), 
-        caption = "Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity") %>%
+  kable(col.names = c("Race/Ethnicity", "Pre-COVID Concerns", "Post-COVID Concerns"), 
+        caption = "Pre and New COVID Concerns for General Well-being by Race/Ethnicity") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 ```
 
@@ -335,24 +335,23 @@ concern_counts <- personal_data_long %>%
   mutate(
     pre_covid_prop = round((pre_covid / total) * 100, 2),
     post_covid_prop = round((post_covid / total) * 100, 2),
-    difference = round(post_covid_prop - pre_covid_prop, 2)
   )
 
 concern_counts %>%
-  select(Race_Ethnicity, pre_covid_prop, post_covid_prop, difference) %>%
-  kable(col.names = c("Race/Ethnicity", "Pre-COVID Proportion (%)", "Post-COVID Proportion (%)", "Difference (Post - Pre)"), 
-        caption = "Difference in Post-Pre COVID Concerns for Professional Development (Proportions)") %>%
+  select(Race_Ethnicity, pre_covid_prop, post_covid_prop) %>%
+  kable(col.names = c("Race/Ethnicity", "Pre-COVID Proportion (%)", "New COVID Proportion (%)"), 
+        caption = "Pre and New COVID Concerns for Professional Development (Proportions)") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 ```
 
 ```{r}
-ggplot(concern_counts, aes(x = Race_Ethnicity, y = difference, fill = Race_Ethnicity)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Difference in Proportion of Professional Development by Race",
-       x = "", y = "Difference in Proportion (Post - Pre)") +
-  theme_minimal() +
-  theme(axis.text.x=element_blank(), 
-        axis.ticks.x=element_blank())
+# ggplot(concern_counts, aes(x = Race_Ethnicity, y = difference, fill = Race_Ethnicity)) +
+#   geom_bar(stat = "identity") +
+#   labs(title = "Difference in Proportion of Professional Development by Race",
+#        x = "", y = "Difference in Proportion (Post - Pre)") +
+#   theme_minimal() +
+#   theme(axis.text.x=element_blank(), 
+#         axis.ticks.x=element_blank())
 ```
 
 ```{r}
@@ -377,25 +376,24 @@ concern_counts <- personal_data_long %>%
   left_join(total_counts, by = "Race_Ethnicity") %>%
   mutate(
     pre_covid_prop = round((pre_covid / total) * 100, 2),
-    post_covid_prop = round((post_covid / total) * 100, 2),
-    difference = round(post_covid_prop - pre_covid_prop, 2)
+    post_covid_prop = round((post_covid / total) * 100, 2)
   )
 
 concern_counts %>%
-  select(Race_Ethnicity, pre_covid_prop, post_covid_prop, difference) %>%
-  kable(col.names = c("Race/Ethnicity", "Pre-COVID Proportion (%)", "Post-COVID Proportion (%)", "Difference (Post - Pre)"), 
-        caption = "Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity (Proportions)") %>%
+  select(Race_Ethnicity, pre_covid_prop, post_covid_prop) %>%
+  kable(col.names = c("Race/Ethnicity", "Pre-COVID Proportion (%)", "New COVID Proportion (%)"), 
+        caption = "Pre and New COVID Concerns for General Well-being by Race/Ethnicity (Proportions)") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 ```
 
 ```{r}
-ggplot(concern_counts, aes(x = Race_Ethnicity, y = difference, fill = Race_Ethnicity)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Difference in Proportion of Generall Well Being by Race",
-       x = "", y = "Difference in Proportion (Post - Pre)") +
-  theme_minimal() +
-  theme(axis.text.x=element_blank(), 
-        axis.ticks.x=element_blank())
+# ggplot(concern_counts, aes(x = Race_Ethnicity, y = difference, fill = Race_Ethnicity)) +
+#   geom_bar(stat = "identity") +
+#   labs(title = "Difference in Proportion of Generall Well Being by Race",
+#        x = "", y = "Difference in Proportion (Post - Pre)") +
+#   theme_minimal() +
+#   theme(axis.text.x=element_blank(), 
+#         axis.ticks.x=element_blank())
 ```
 
 ## Try By Role
@@ -466,10 +464,10 @@ concern_counts %>%
 ```
 
 ```{r}
-ggplot(concern_counts, aes(x = Role, y = difference, fill = Role)) +
+ggplot(concern_counts, aes(x = Role, y = post_covid_prop, fill = Role)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ Professional_Development, scales = "free_y") +
-  labs(title = "Difference in Proportion of COVID Concerns by Role Faceted by Professional Devlopement Category",
+  labs(title = "Proportion of New COVID Concerns by Role Faceted by Professional Devlopement Category",
        x = "Role", y = "Difference in Proportion (Post - Pre)") +
   theme_minimal() +
   # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
@@ -479,10 +477,10 @@ ggplot(concern_counts, aes(x = Role, y = difference, fill = Role)) +
 ```
 
 ```{r}
-ggplot(concern_counts, aes(x = Professional_Development, y = difference, fill = Professional_Development)) +
+ggplot(concern_counts, aes(x = Professional_Development, y = post_covid_prop, fill = Professional_Development)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ Role, scales = "free_y") +
-  labs(title = "Difference in Proportion of COVID Concerns by Professional Development Category Faceted by Role",
+  labs(title = "Proportion of New COVID Concerns by Professional Development Category Faceted by Role",
        x = "", y = "Difference in Proportion (Post - Pre)") +
   theme_minimal() +
   theme(axis.text.x=element_blank(), 

@@ -951,10 +951,10 @@ $graph</code></pre>
 <span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid =</span> <span class="fu">sum</span>(General.well.being <span class="sc">==</span> <span class="dv">1</span>),</span>
 <span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid =</span> <span class="fu">sum</span>(General.well.being <span class="sc">==</span> <span class="dv">2</span>)</span>
 <span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="ot">&lt;-</span> concern_counts <span class="sc">%&gt;%</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>concern_counts2 <span class="ot">&lt;-</span> concern_counts <span class="sc">%&gt;%</span></span>
 <span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">difference =</span> post_covid <span class="sc">-</span> pre_covid)</span>
 <span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> difference, <span class="at">y =</span> difference, <span class="at">fill =</span> Race_Ethnicity)) <span class="sc">+</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts2, <span class="fu">aes</span>(<span class="at">x =</span> difference, <span class="at">y =</span> difference, <span class="at">fill =</span> Race_Ethnicity)) <span class="sc">+</span></span>
 <span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
 <span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity"</span>,</span>
 <span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
@@ -971,20 +971,19 @@ $graph</code></pre>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="sc">%&gt;%</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Pre-COVID Concerns"</span>, <span class="st">"Post-COVID Concerns"</span>, <span class="st">"Difference (Post - Pre)"</span>), </span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Pre-COVID Concerns"</span>, <span class="st">"Post-COVID Concerns"</span>), </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Pre and New COVID Concerns for General Well-being by Race/Ethnicity"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <div class="table-responsive">
 <table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
-<caption>Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity</caption>
+<caption>Pre and New COVID Concerns for General Well-being by Race/Ethnicity</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Race/Ethnicity</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">Pre-COVID Concerns</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">Post-COVID Concerns</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Difference (Post - Pre)</th>
 </tr>
 </thead>
 <tbody>
@@ -992,17 +991,14 @@ $graph</code></pre>
 <td style="text-align: left;">Asian</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Black or African American</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Decline to state</td>
-<td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 </tr>
@@ -1010,23 +1006,19 @@ $graph</code></pre>
 <td style="text-align: left;">Hispanic or Latinx</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Mixed Race (two or more races)</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Native Hawaiian or Other Pacific Islander</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Other (write-in)</td>
-<td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 </tr>
@@ -1034,7 +1026,6 @@ $graph</code></pre>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">12</td>
-<td style="text-align: right;">8</td>
 </tr>
 </tbody>
 </table>
@@ -1067,25 +1058,23 @@ $graph</code></pre>
 <span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid_prop =</span> <span class="fu">round</span>((pre_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
 <span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid_prop =</span> <span class="fu">round</span>((post_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">difference =</span> <span class="fu">round</span>(post_covid_prop <span class="sc">-</span> pre_covid_prop, <span class="dv">2</span>)</span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="sc">%&gt;%</span></span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Race_Ethnicity, pre_covid_prop, post_covid_prop, difference) <span class="sc">%&gt;%</span></span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Pre-COVID Proportion (%)"</span>, <span class="st">"Post-COVID Proportion (%)"</span>, <span class="st">"Difference (Post - Pre)"</span>), </span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Difference in Post-Pre COVID Concerns for Professional Development (Proportions)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="sc">%&gt;%</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Race_Ethnicity, pre_covid_prop, post_covid_prop) <span class="sc">%&gt;%</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Pre-COVID Proportion (%)"</span>, <span class="st">"New COVID Proportion (%)"</span>), </span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Pre and New COVID Concerns for Professional Development (Proportions)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <div class="table-responsive">
 <table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
-<caption>Difference in Post-Pre COVID Concerns for Professional Development (Proportions)</caption>
+<caption>Pre and New COVID Concerns for Professional Development (Proportions)</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Race/Ethnicity</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">Pre-COVID Proportion (%)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Post-COVID Proportion (%)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Difference (Post - Pre)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">New COVID Proportion (%)</th>
 </tr>
 </thead>
 <tbody>
@@ -1093,49 +1082,41 @@ $graph</code></pre>
 <td style="text-align: left;">Asian</td>
 <td style="text-align: right;">37.50</td>
 <td style="text-align: right;">37.50</td>
-<td style="text-align: right;">0.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Black or African American</td>
 <td style="text-align: right;">66.67</td>
 <td style="text-align: right;">33.33</td>
-<td style="text-align: right;">-33.34</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Decline to state</td>
 <td style="text-align: right;">0.00</td>
-<td style="text-align: right;">100.00</td>
 <td style="text-align: right;">100.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Hispanic or Latinx</td>
 <td style="text-align: right;">0.00</td>
 <td style="text-align: right;">66.67</td>
-<td style="text-align: right;">66.67</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Mixed Race (two or more races)</td>
 <td style="text-align: right;">33.33</td>
 <td style="text-align: right;">50.00</td>
-<td style="text-align: right;">16.67</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Native Hawaiian or Other Pacific Islander</td>
 <td style="text-align: right;">50.00</td>
 <td style="text-align: right;">50.00</td>
-<td style="text-align: right;">0.00</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Other (write-in)</td>
 <td style="text-align: right;">0.00</td>
-<td style="text-align: right;">50.00</td>
 <td style="text-align: right;">50.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">11.54</td>
 <td style="text-align: right;">61.54</td>
-<td style="text-align: right;">50.00</td>
 </tr>
 </tbody>
 </table>
@@ -1146,20 +1127,13 @@ $graph</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Race_Ethnicity, <span class="at">y =</span> difference, <span class="at">fill =</span> Race_Ethnicity)) <span class="sc">+</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Proportion of Professional Development by Race"</span>,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Difference in Proportion (Post - Pre)"</span>) <span class="sc">+</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>(), </span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks.x=</span><span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(concern_counts, aes(x = Race_Ethnicity, y = difference, fill = Race_Ethnicity)) +</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_bar(stat = "identity") +</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   labs(title = "Difference in Proportion of Professional Development by Race",</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">#        x = "", y = "Difference in Proportion (Post - Pre)") +</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   theme_minimal() +</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   theme(axis.text.x=element_blank(), </span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">#         axis.ticks.x=element_blank())</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df_personal[] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_personal[], as.character)</span>
@@ -1183,26 +1157,24 @@ $graph</code></pre>
 <span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(total_counts, <span class="at">by =</span> <span class="st">"Race_Ethnicity"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">pre_covid_prop =</span> <span class="fu">round</span>((pre_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
-<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid_prop =</span> <span class="fu">round</span>((post_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>),</span>
-<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">difference =</span> <span class="fu">round</span>(post_covid_prop <span class="sc">-</span> pre_covid_prop, <span class="dv">2</span>)</span>
-<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="sc">%&gt;%</span></span>
-<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Race_Ethnicity, pre_covid_prop, post_covid_prop, difference) <span class="sc">%&gt;%</span></span>
-<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Pre-COVID Proportion (%)"</span>, <span class="st">"Post-COVID Proportion (%)"</span>, <span class="st">"Difference (Post - Pre)"</span>), </span>
-<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity (Proportions)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_covid_prop =</span> <span class="fu">round</span>((post_covid <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>)</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>concern_counts <span class="sc">%&gt;%</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Race_Ethnicity, pre_covid_prop, post_covid_prop) <span class="sc">%&gt;%</span></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Pre-COVID Proportion (%)"</span>, <span class="st">"New COVID Proportion (%)"</span>), </span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Pre and New COVID Concerns for General Well-being by Race/Ethnicity (Proportions)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>, <span class="st">"responsive"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <div class="table-responsive">
 <table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
-<caption>Difference in Post-Pre COVID Concerns for General Well-being by Race/Ethnicity (Proportions)</caption>
+<caption>Pre and New COVID Concerns for General Well-being by Race/Ethnicity (Proportions)</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Race/Ethnicity</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">Pre-COVID Proportion (%)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Post-COVID Proportion (%)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Difference (Post - Pre)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">New COVID Proportion (%)</th>
 </tr>
 </thead>
 <tbody>
@@ -1210,17 +1182,14 @@ $graph</code></pre>
 <td style="text-align: left;">Asian</td>
 <td style="text-align: right;">20.00</td>
 <td style="text-align: right;">40.00</td>
-<td style="text-align: right;">20.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Black or African American</td>
 <td style="text-align: right;">33.33</td>
 <td style="text-align: right;">33.33</td>
-<td style="text-align: right;">0.00</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Decline to state</td>
-<td style="text-align: right;">0.00</td>
 <td style="text-align: right;">0.00</td>
 <td style="text-align: right;">0.00</td>
 </tr>
@@ -1228,23 +1197,19 @@ $graph</code></pre>
 <td style="text-align: left;">Hispanic or Latinx</td>
 <td style="text-align: right;">33.33</td>
 <td style="text-align: right;">33.33</td>
-<td style="text-align: right;">0.00</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Mixed Race (two or more races)</td>
 <td style="text-align: right;">33.33</td>
 <td style="text-align: right;">66.67</td>
-<td style="text-align: right;">33.34</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Native Hawaiian or Other Pacific Islander</td>
 <td style="text-align: right;">50.00</td>
 <td style="text-align: right;">50.00</td>
-<td style="text-align: right;">0.00</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Other (write-in)</td>
-<td style="text-align: right;">0.00</td>
 <td style="text-align: right;">0.00</td>
 <td style="text-align: right;">0.00</td>
 </tr>
@@ -1252,7 +1217,6 @@ $graph</code></pre>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">16.00</td>
 <td style="text-align: right;">48.00</td>
-<td style="text-align: right;">32.00</td>
 </tr>
 </tbody>
 </table>
@@ -1263,20 +1227,13 @@ $graph</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Race_Ethnicity, <span class="at">y =</span> difference, <span class="at">fill =</span> Race_Ethnicity)) <span class="sc">+</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Proportion of Generall Well Being by Race"</span>,</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Difference in Proportion (Post - Pre)"</span>) <span class="sc">+</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>(), </span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks.x=</span><span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="June10-14Activity_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(concern_counts, aes(x = Race_Ethnicity, y = difference, fill = Race_Ethnicity)) +</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_bar(stat = "identity") +</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   labs(title = "Difference in Proportion of Generall Well Being by Race",</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#        x = "", y = "Difference in Proportion (Post - Pre)") +</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   theme_minimal() +</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   theme(axis.text.x=element_blank(), </span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co">#         axis.ticks.x=element_blank())</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="try-by-role" class="level2">
@@ -1682,10 +1639,10 @@ $graph</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Role, <span class="at">y =</span> difference, <span class="at">fill =</span> Role)) <span class="sc">+</span></span>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Role, <span class="at">y =</span> post_covid_prop, <span class="at">fill =</span> Role)) <span class="sc">+</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Professional_Development, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Proportion of COVID Concerns by Role Faceted by Professional Devlopement Category"</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of New COVID Concerns by Role Faceted by Professional Devlopement Category"</span>,</span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Role"</span>, <span class="at">y =</span> <span class="st">"Difference in Proportion (Post - Pre)"</span>) <span class="sc">+</span></span>
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
 <span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),</span></span>
@@ -1701,10 +1658,10 @@ $graph</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Professional_Development, <span class="at">y =</span> difference, <span class="at">fill =</span> Professional_Development)) <span class="sc">+</span></span>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(concern_counts, <span class="fu">aes</span>(<span class="at">x =</span> Professional_Development, <span class="at">y =</span> post_covid_prop, <span class="at">fill =</span> Professional_Development)) <span class="sc">+</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Role, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Difference in Proportion of COVID Concerns by Professional Development Category Faceted by Role"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of New COVID Concerns by Professional Development Category Faceted by Role"</span>,</span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"Difference in Proportion (Post - Pre)"</span>) <span class="sc">+</span></span>
 <span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
 <span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>(), </span>
