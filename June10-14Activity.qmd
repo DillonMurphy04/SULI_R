@@ -361,17 +361,17 @@ concern_counts %>%
 ```{r}
 df_professional[] <- lapply(df_professional[], as.character)
 
-personal_data_long <- df_professional %>%
+professional_data_long <- df_professional %>%
   mutate(id = row_number()) %>%
   separate_rows(Professional.development..internships..programs..conferences., sep = ",") %>%
   separate_rows(Race_Ethnicity, sep = ",") %>%
   mutate(General.well.being = as.integer(Professional.development..internships..programs..conferences.))
 
-total_counts <- personal_data_long %>%
+total_counts <- professional_data_long %>%
   group_by(Race_Ethnicity) %>%
   summarize(total = n())
 
-concern_counts <- personal_data_long %>%
+concern_counts <- professional_data_long %>%
   group_by(Race_Ethnicity) %>%
   summarize(
     pre_covid = sum(Professional.development..internships..programs..conferences. == 1),
@@ -442,6 +442,73 @@ concern_counts %>%
 #         axis.ticks.x=element_blank())
 ```
 
+**Together**
+
+```{r}
+professional_data_long <- df_professional %>%
+  mutate(id = row_number()) %>%
+  separate_rows(Professional.development..internships..programs..conferences., sep = ",") %>%
+  separate_rows(Race_Ethnicity, sep = ",") %>%
+  mutate(Concern = as.integer(Professional.development..internships..programs..conferences.))
+
+total_counts_professional <- professional_data_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(total = n())
+
+
+personal_data_long <- df_personal %>%
+  mutate(id = row_number()) %>%
+  separate_rows(General.well.being, sep = ",") %>%
+  separate_rows(Race_Ethnicity, sep = ",") %>%
+  mutate(Concern = as.integer(General.well.being))
+
+total_counts_personal <- personal_data_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(total = n())
+
+
+concern_counts_professional <- professional_data_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(
+    pre_covid = sum(Concern == 1),
+    post_covid = sum(Concern == 2)
+  ) %>%
+  left_join(total_counts_professional, by = "Race_Ethnicity") %>%
+  mutate(
+    pre_covid_prop_professional = round((pre_covid / total) * 100, 2),
+    post_covid_prop_professional = round((post_covid / total) * 100, 2)
+  )
+
+
+concern_counts_personal <- personal_data_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(
+    pre_covid = sum(Concern == 1),
+    post_covid = sum(Concern == 2)
+  ) %>%
+  left_join(total_counts_personal, by = "Race_Ethnicity") %>%
+  mutate(
+    pre_covid_prop_personal  = round((pre_covid / total) * 100, 2),
+    post_covid_prop_personal  = round((post_covid / total) * 100, 2)
+  )
+
+combined_counts <- full_join(
+  concern_counts_personal %>% select(Race_Ethnicity, pre_covid_prop_personal, post_covid_prop_personal),
+  concern_counts_professional %>% select(Race_Ethnicity, pre_covid_prop_professional, post_covid_prop_professional),
+  by = "Race_Ethnicity"
+) %>%
+  mutate(
+    Category = ifelse(is.na(pre_covid_prop_personal), "Professional Development", "General Well-being")
+  ) %>%
+  select(Race_Ethnicity, pre_covid_prop_personal, post_covid_prop_personal, pre_covid_prop_professional, post_covid_prop_professional)
+
+combined_counts %>%
+  kable(col.names = c("Race/Ethnicity", "Pre-COVID Prop.", "New COVID Prop.", "Pre-COVID Prop.", "New COVID Prop."),
+        caption = "Table 2: Pre and New COVID Concerns by Race/Ethnicity and Category (Proportions)") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  add_header_above(c("  " = 1, "General Well-being" = 2, "Professional Development" = 2))
+```
+
 ## Try By Role
 
 ```{r}
@@ -510,16 +577,19 @@ concern_counts %>%
 ```
 
 ```{r}
+gray_palette <- c("#CCCCCC", "#999999", "#666666", "#333333", "#222222", "#111111")
 ggplot(concern_counts, aes(x = Role, y = post_covid_prop, fill = Role)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ Professional_Development, scales = "free_y") +
-  labs(title = "Proportion of New COVID Concerns by Role Faceted by Professional Devlopement Category",
-       x = "Role", y = "Difference in Proportion (Post - Pre)") +
+  scale_fill_manual(values = gray_palette) +
+  labs(title = "Proportion of New COVID Concerns by Role Faceted by Professional Developement Category",
+       x = "", y = "") +
   theme_minimal() +
-  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-  #       legend.position = "none")
   theme(axis.text.x=element_blank(), 
-        axis.ticks.x=element_blank())
+        axis.ticks.x=element_blank(),
+        legend.position = "bottom",
+        plot.caption = element_text(hjust = 0, size = 12))+
+  labs(caption = "Fig. 2. Proportion of concerns related to new COVID issues by role, grouped by professional development category")
 ```
 
 ```{r}
