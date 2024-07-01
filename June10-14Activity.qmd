@@ -69,7 +69,7 @@ tbl_professional <- as_tibble(filtered_aggregate_professional)
 
 styled_tbl_personal <- tbl_personal %>%
   mutate(
-    Concern_Category = c("Nutrition", "Housing", "Medical", "Finances", "Gen Well Gein", "Mental Health", "Living Conditions", "Distance from Friends & Family", "Relationships", "Childcare", "Education for Kids"),
+    Concern_Category = c("Nutrition", "Housing", "Medical", "Finances", "General Well Being", "Mental Health", "Living Conditions", "Distance from Friends & Family", "Relationships", "Childcare", "Education for Kids"),
     Difference = New_COVID_Count - Pre_COVID_Count
   ) %>%
   select(Concern_Category, Pre_COVID_Count, New_COVID_Count, Difference) %>%
@@ -90,7 +90,7 @@ styled_tbl_professional
 ```
 
 ```{r}
-personal_labels <- c("Nutrition", "Housing", "Medical", "Finances", "Gen Well Gein", "Mental Health", "Living Conditions", "Distance from Friends & Family", "Relationships", "Childcare", "Education for Kids")
+personal_labels <- c("Nutrition", "Housing", "Medical", "Finances", "General Well Being", "Mental Health", "Living Conditions", "Distance from Friends & Family", "Relationships", "Childcare", "Education for Kids")
 
 df_personal_long <- filtered_aggregate_personal %>%
   rownames_to_column(var = "Concern_Category") %>%
@@ -167,20 +167,79 @@ plot_professional <- ggplot(df_professional_long, aes(x = Count, y = fct_reorder
   scale_fill_manual(values = color_palette, 
                     labels = c("Pre-COVID Issue", "New Issue due to COVID")) +
   labs(title = "Professional",
-       x = "", y = "", fill = "Issue Type") +
+       x = "Count", y = "", fill = "Issue Type") +
   theme_minimal() +
   xlim(0,25)
 
 combined_plots <- plot_personal / plot_professional +
   plot_layout(guides = "collect") &
   plot_annotation(
-    title = "Distribution of Pre-COVID & New Covid Issues",
-    caption = "Fig. 1. Bar charts of concern levels for professional and personal impacts revealing dramatic increase in majority of issues",
+    title = "",
+    caption = "Fig. 1. Concern levels for professional and personal impacts, revealing dramatic increase in majority of issues",
+    theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
+  ) & theme(legend.position = 'top')
+
+total_counts_professional <- df_professional_long %>%
+  summarize(total = sum(Count))
+top3_professional <- df_professional_long %>%
+  group_by(Concern_Category) %>%
+  summarize(total_count = sum(Count)) %>%
+  arrange(desc(total_count)) %>%
+  slice(1:3) %>%
+  pull(Concern_Category)
+df_professional_top3 <- df_professional_long %>%
+  filter(Concern_Category %in% top3_professional)
+total_counts_personal <- df_personal_long %>%
+  summarize(total = sum(Count))
+top3_personal <- df_personal_long %>%
+  group_by(Concern_Category) %>%
+  summarize(total_count = sum(Count)) %>%
+  arrange(desc(total_count)) %>%
+  slice(1:3) %>%
+  pull(Concern_Category)
+
+combined_plots
+```
+```{r}
+total_personal_count <- sum(df_personal_long$Count)
+df_personal_long <- df_personal_long %>%
+  mutate(Proportion = Count / total_personal_count)
+total_professional_count <- sum(df_professional_long$Count)
+df_professional_long <- df_professional_long %>%
+  mutate(Proportion = Count / total_professional_count)
+color_palette <- c("#CCCCCC", "#666666")
+plot_personal <- ggplot(df_personal_long, aes(x = Proportion, y = fct_reorder(Concern_Category, Proportion, .desc = FALSE), fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  scale_fill_manual(values = color_palette, 
+                    labels = c("Pre-COVID Issue", "New Issue due to COVID")) +
+  labs(title = "Personal",
+       x = "", y = "", fill = "Issue Type") +
+  theme_minimal() +
+    theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        plot.title = element_text(vjust = -1, margin = margin(b = -20))) +
+  xlim(0,0.2)
+
+plot_professional <- ggplot(df_professional_long, aes(x = Proportion, y = fct_reorder(Concern_Category, Proportion, .desc = FALSE), fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  scale_fill_manual(values = color_palette, 
+                    labels = c("Pre-COVID Issue", "New Issue due to COVID")) +
+  labs(title = "Professional",
+       x = "Proportion", y = "", fill = "Issue Type") +
+  theme_minimal() +
+  xlim(0,0.2)
+
+combined_plots <- plot_personal / plot_professional +
+  plot_layout(guides = "collect") &
+  plot_annotation(
+    title = "",
+    caption = "Fig. 1. Concern levels for professional and personal impacts, revealing dramatic increase in majority of issues",
     theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
   ) & theme(legend.position = 'top')
 
 combined_plots
 ```
+
 
 ## Demographics Visualizations
 
@@ -259,7 +318,8 @@ generate_summary_table <- function(df, column, category_name) {
     count({{column}}, name = "count") %>%
     mutate(percentage = round((count / total) * 100, 2)) %>%
     rename(Category = {{column}}) %>%
-    arrange(desc(count))
+    arrange(desc(count)) %>% 
+    mutate(Category = ifelse(Category == "Gender fluid/queer/non-conforming", "Genderfluid, Genderqueer, or Gender Non-conforming", Category))
   
   return(summary_df)
 }
@@ -509,6 +569,46 @@ combined_counts %>%
   add_header_above(c("  " = 1, "General Well-being" = 2, "Professional Development" = 2))
 ```
 
+```{r}
+professional_labels <- c("Learning environment", "Completing education", "Decisions about graduate school",
+                         "Other education-related", "Professional development", "Finding a job",
+                         "Keeping current job", "Telework tools", "Telework productivity")
+personal_labels <- c("Nutrition", "Housing", "Medical", "Finances", "General Well Being", "Mental Health",
+                     "Living Conditions", "Distance from Friends & Family", "Relationships", "Childcare", 
+                     "Education for Kids")
+col_names <- names(df_professional)[1:(ncol(df_professional) - 3)]
+df_professional <- df_professional %>% rename_at(vars(col_names), ~ professional_labels)
+col_names <- names(df_personal)[-ncol(df_personal)]
+df_personal <- df_personal %>% rename_at(vars(col_names), ~ personal_labels)
+
+df_professional_long <- df_professional %>%
+  select(Race_Ethnicity, all_of(top3_professional)) %>%
+  pivot_longer(cols = all_of(top3_professional), names_to = "Category", values_to = "Concern") %>%
+  separate_rows(Race_Ethnicity, sep = ",")
+
+total_counts_professional <- df_professional_long %>%
+  group_by(Race_Ethnicity) %>%
+  summarize(total = n())
+
+concern_counts_professional <- df_professional_long %>%
+  group_by(Race_Ethnicity, Category) %>%
+  summarize(pre_covid = sum(Concern == 1, na.rm = TRUE),
+            post_covid = sum(Concern == 2, na.rm = TRUE)) %>%
+  left_join(total_counts_professional, by = "Race_Ethnicity") %>%
+  mutate(
+    pre_covid_prop = round((pre_covid / total) * 100, 2),
+    post_covid_prop = round((post_covid / total) * 100, 2)
+  ) %>%
+  select(Race_Ethnicity, Category, pre_covid_prop, post_covid_prop)
+
+concern_counts_professional %>%
+  pivot_wider(names_from = Category, values_from = c(pre_covid_prop, post_covid_prop)) %>% 
+  kable(col.names = c("Race/Ethnicity", "Pre-COVID Prop.", "New COVID Prop.", "Pre-COVID Prop.", "New COVID Prop.", "Pre-COVID Prop.", "New COVID Prop."),
+        caption = "Table 2: Top 3 Pre and New COVID Concerns for Professional Development by Race/Ethnicity (Proportions)") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  add_header_above(c("  " = 1, "Learning Environment" = 2, "Telework Productivity" = 2, "Professional Development" = 2))
+```
+
 ## Try By Role
 
 ```{r}
@@ -582,6 +682,7 @@ ggplot(concern_counts, aes(x = Role, y = post_covid_prop, fill = Role)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ Professional_Development, scales = "free_y") +
   scale_fill_manual(values = gray_palette) +
+  scale_y_continuous(limits = c(0, 100), expand = c(0, 0)) +
   labs(title = "Proportion of New COVID Concerns by Role Faceted by Professional Developement Category",
        x = "", y = "") +
   theme_minimal() +
@@ -590,6 +691,37 @@ ggplot(concern_counts, aes(x = Role, y = post_covid_prop, fill = Role)) +
         legend.position = "bottom",
         plot.caption = element_text(hjust = 0, size = 12))+
   labs(caption = "Fig. 2. Proportion of concerns related to new COVID issues by role, grouped by professional development category")
+```
+
+```{r}
+library(ggpattern)
+gray_palette <- c("#CCCCCC", "#999999", "#999999", "#666666", "#333333","#111111")
+ggplot(concern_counts, aes(x = Role, y = post_covid_prop, fill = Role)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Professional_Development, scales = "free_y") +
+  scale_fill_manual(values = gray_palette) +
+  scale_y_continuous(limits = c(0, 100), expand = c(0, 0)) +
+  labs(title = "Proportion of New COVID Concerns by Role Faceted by Professional Developement Category",
+       x = "", y = "") +
+  theme_minimal() +
+  theme(axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank(),
+        legend.position = "bottom",
+        plot.caption = element_text(hjust = 0, size = 12))+
+  labs(caption = "Fig. 2. Proportion of concerns related to new COVID issues by role, grouped by professional development category") +
+  scale_pattern_manual(
+    "Position",
+    values = c("none", "none", "stripe", "none", "none")
+  ) +
+  geom_col_pattern(
+    aes(pattern = Role),
+    position = "dodge",
+    pattern_angle = 45,
+    pattern_density = .1,
+    pattern_spacing = .04,
+    pattern_fill = "black",
+    color = "black"
+  ) 
 ```
 
 ```{r}
