@@ -15,7 +15,7 @@ library(stringr)
 library(SnowballC)
 library(patchwork)
 
-data <- read.csv("data_snippet.csv")
+data <- read.csv("data_all.csv", skip = 1)
 ```
 
 ## Some Major Takeaways Visualizations
@@ -160,7 +160,7 @@ plot_personal <- ggplot(df_personal_long, aes(x = Count, y = fct_reorder(Concern
     theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         plot.title = element_text(vjust = -1, margin = margin(b = -20))) +
-  xlim(0,25)
+  xlim(0,1300)
 
 plot_professional <- ggplot(df_professional_long, aes(x = Count, y = fct_reorder(Concern_Category, Count, .desc = FALSE), fill = Type)) +
   geom_bar(stat = "identity", position = position_dodge()) +
@@ -169,7 +169,7 @@ plot_professional <- ggplot(df_professional_long, aes(x = Count, y = fct_reorder
   labs(title = "Professional",
        x = "Count", y = "", fill = "Issue Type") +
   theme_minimal() +
-  xlim(0,25)
+  xlim(0,1300)
 
 combined_plots <- plot_personal / plot_professional +
   plot_layout(guides = "collect") &
@@ -311,15 +311,29 @@ library(htmltools)
 generate_summary_table <- function(df, column, category_name) {
   total <- nrow(df)
   
-  # Handling specific category name issue
   summary_df <- df %>%
-    mutate({{column}} := ifelse({{column}} == "Genderfluid, Genderqueer, or Gender Non-conforming","Gender fluid/queer/non-conforming", {{column}})) %>%
+    mutate({{column}} := ifelse({{column}} == "Genderfluid, Genderqueer, or Gender Non-conforming", "Gender fluid/queer/non-conforming", {{column}})) %>%
     separate_rows({{column}}, sep = ",") %>%
     count({{column}}, name = "count") %>%
     mutate(percentage = round((count / total) * 100, 2)) %>%
     rename(Category = {{column}}) %>%
-    arrange(desc(count)) %>% 
+    arrange(desc(count))
+  
+  if (category_name %in% c("Race/Ethnicity", "Gender Identity")) {
+    summary_df <- summary_df %>%
+      mutate(order = case_when(
+        Category == "Decline to state" ~ 1,
+        Category == "Other (write-in)" ~ 2,
+        TRUE ~ 0
+      )) %>%
+      arrange(order, desc(count)) %>%
+      select(-order)
+  }
+  
+  summary_df <- summary_df %>%
     mutate(Category = ifelse(Category == "Gender fluid/queer/non-conforming", "Genderfluid, Genderqueer, or Gender Non-conforming", Category))
+  
+  return(summary_df)
   
   return(summary_df)
 }
@@ -346,7 +360,7 @@ formatted_table_role <- summary_df_role %>%
   column_spec(1, width = "20%") %>%
   column_spec(2:3, width = "10%", extra_css = "text-align: right;")
 combined_table <- paste(
-  "<h2 style='text-align: left; font-size: 12pt;'>Table 1: Respondent Demographic Information (N=36)</h2>",
+  "<h2 style='text-align: left; font-size: 12pt;'>Table 1: Respondent Demographic Information (N=2549)</h2>",
   as.character(formatted_table_race_ethnicity),
   as.character(formatted_table_gender_identity),
   as.character(formatted_table_role),
@@ -601,12 +615,38 @@ concern_counts_professional <- df_professional_long %>%
   ) %>%
   select(Race_Ethnicity, Category, pre_covid_prop, post_covid_prop)
 
-concern_counts_professional %>%
-  pivot_wider(names_from = Category, values_from = c(pre_covid_prop, post_covid_prop)) %>% 
-  kable(col.names = c("Race/Ethnicity", "Pre-COVID Prop.", "New COVID Prop.", "Pre-COVID Prop.", "New COVID Prop.", "Pre-COVID Prop.", "New COVID Prop."),
-        caption = "Table 2: Top 3 Pre and New COVID Concerns for Professional Development by Race/Ethnicity (Proportions)") %>%
+wide_concern_counts <- concern_counts_professional %>%
+  pivot_wider(
+    names_from = Category,
+    values_from = c(pre_covid_prop, post_covid_prop),
+    names_sep = "_"
+  )
+
+wide_concern_counts <- wide_concern_counts %>%
+  mutate(order = ifelse(Race_Ethnicity == "Other (write-in)", 1, 0)) %>%
+  arrange(order, Race_Ethnicity) %>%
+  select(-order)
+
+wide_concern_counts <- wide_concern_counts %>%
+  select(Race_Ethnicity, 
+         starts_with("pre_covid_prop_Learning Environment"), starts_with("post_covid_prop_Learning Environment"),
+         starts_with("pre_covid_prop_Telework Productivity"), starts_with("post_covid_prop_Telework Productivity"),
+         starts_with("pre_covid_prop_Professional Development"), starts_with("post_covid_prop_Professional Development"))
+
+colnames(wide_concern_counts) <- c(
+  "Race/Ethnicity",
+  "Pre-COVID Prop.", "New COVID Prop.",
+  "Pre-COVID Prop.", "New COVID Prop.",
+  "Pre-COVID Prop.", "New COVID Prop."
+)
+
+wide_concern_counts %>%
+  kable(
+    col.names = c("Race/Ethnicity", "Pre-COVID Prop.", "New COVID Prop.", "Pre-COVID Prop.", "New COVID Prop.", "Pre-COVID Prop.", "New COVID Prop."),
+    caption = "Table 2: Top 3 Pre and New COVID Concerns for Professional Development by Race/Ethnicity (Proportions)"
+  ) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
-  add_header_above(c("  " = 1, "Learning Environment" = 2, "Telework Productivity" = 2, "Professional Development" = 2))
+  add_header_above(c(" " = 1, "Learning Environment" = 2, "Telework Productivity" = 2, "Professional Development" = 2))
 ```
 
 ## Try By Role
