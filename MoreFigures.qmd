@@ -1,0 +1,53 @@
+---
+title: "MoreFigures"
+format: html
+editor: visual
+---
+
+```{r Setup, warning=FALSE, message=FALSE}
+library(tidyverse)
+data <- read.csv("data_all.csv", skip = 1)
+```
+
+## Supported Graph
+
+```{r}
+df_supported <- data %>% 
+  rename(Supported = Did.you.feel.supported.from.your.institution..department..team..etc...,
+         Changed = How.has.COVID.19.changed.and.or.altered.your.academic.or.professional.plans...Some.examples..programs.you.will.apply.to..jobs.you.will.apply.to..interest.level.in.certain.career.paths.) %>% 
+  select(Supported, Changed)
+
+df_supported <- df_supported %>%
+  mutate(Supported = case_when(
+    Supported %in% c("Supported", "supported") ~ "Supported",
+    Supported %in% c("Not supported", "Not Supported", "not supported") ~ "Not supported",
+    Supported %in% c("Neutral feelings", "Neutral feellings", "neutral feelings") ~ "Neutral feelings",
+    Supported == "" ~ "Not coded yet",
+    TRUE ~ Supported
+  ))
+
+
+head(df_supported)
+```
+
+```{r}
+summarized_df <- df_supported %>%
+  group_by(Supported, Changed) %>%
+  summarise(Count = n()) %>%
+  ungroup()
+
+summarized_df <- summarized_df %>%
+  arrange(desc(Count)) %>%
+  mutate(Supported = factor(Supported, levels = unique(Supported)))
+
+ggplot(summarized_df, aes(x = Supported, y = Count, fill = Changed)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Impact of Institutional Support on Career Plans",
+       x = "Institutional Support",
+       y = "Count",
+       fill = "Career Plan Change",
+       caption = "Fig 3. The relationship between perceived institutional support and changes in academic or professional plans due to COVID-19,\nshowing increased change for those who felt unsupported.") +
+  scale_fill_manual(values = c("NO CHANGE" = "grey70", "CHANGED" = "grey30")) +
+  theme_minimal() +
+  theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
+```
