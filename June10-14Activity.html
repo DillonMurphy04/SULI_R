@@ -840,64 +840,67 @@ $graph</code></pre>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>generate_summary_table <span class="ot">&lt;-</span> <span class="cf">function</span>(df, column, category_name) {</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  summary_df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>({{column}} <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>({{column}} <span class="sc">==</span> <span class="st">"Genderfluid, Genderqueer, or Gender Non-conforming"</span>, <span class="st">"Gender fluid/queer/non-conforming"</span>, {{column}})) <span class="sc">%&gt;%</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate_rows</span>({{column}}, <span class="at">sep =</span> <span class="st">","</span>)</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  total <span class="ot">&lt;-</span> <span class="fu">nrow</span>(summary_df)</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>   summary_df <span class="ot">&lt;-</span> summary_df <span class="sc">%&gt;%</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>({{column}}, <span class="at">name =</span> <span class="st">"count"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">percentage =</span> <span class="fu">round</span>((count <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Category =</span> {{column}}) <span class="sc">%&gt;%</span></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(count))</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (category_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Gender Identity"</span>)) {</span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    summary_df <span class="ot">&lt;-</span> summary_df <span class="sc">%&gt;%</span></span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">order =</span> <span class="fu">case_when</span>(</span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        Category <span class="sc">==</span> <span class="st">"Decline to state"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        Category <span class="sc">==</span> <span class="st">"Other (write-in)"</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span></span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrange</span>(order, <span class="fu">desc</span>(count)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>order)</span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>  summary_df <span class="ot">&lt;-</span> summary_df <span class="sc">%&gt;%</span></span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Category =</span> <span class="fu">ifelse</span>(Category <span class="sc">==</span> <span class="st">"Gender fluid/queer/non-conforming"</span>, <span class="st">"Genderfluid, Genderqueer, or Gender Non-conforming"</span>, Category))</span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(summary_df)</span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(summary_df)</span>
-<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>summary_df_race_ethnicity <span class="ot">&lt;-</span> <span class="fu">generate_summary_table</span>(data, <span class="st">`</span><span class="at">What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice</span><span class="st">`</span>, <span class="st">"Race/Ethnicity"</span>)</span>
-<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>summary_df_gender_identity <span class="ot">&lt;-</span> <span class="fu">generate_summary_table</span>(data, <span class="st">`</span><span class="at">How.would.you.describe.yourself...Mark.one.answer....Selected.Choice</span><span class="st">`</span>, <span class="st">"Gender Identity"</span>)</span>
-<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>summary_df_role <span class="ot">&lt;-</span> <span class="fu">generate_summary_table</span>(data, Role, <span class="st">"Role"</span>)</span>
-<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>formatted_table_race_ethnicity <span class="ot">&lt;-</span> summary_df_race_ethnicity <span class="sc">%&gt;%</span></span>
-<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"20%"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">width =</span> <span class="st">"10%"</span>, <span class="at">extra_css =</span> <span class="st">"text-align: right;"</span>)</span>
-<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>formatted_table_gender_identity <span class="ot">&lt;-</span> summary_df_gender_identity <span class="sc">%&gt;%</span></span>
-<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Gender Identity"</span>, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"20%"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">width =</span> <span class="st">"10%"</span>, <span class="at">extra_css =</span> <span class="st">"text-align: right;"</span>)</span>
-<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a>formatted_table_role <span class="ot">&lt;-</span> summary_df_role <span class="sc">%&gt;%</span></span>
-<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Role"</span>, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"20%"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">width =</span> <span class="st">"10%"</span>, <span class="at">extra_css =</span> <span class="st">"text-align: right;"</span>)</span>
-<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a>combined_table <span class="ot">&lt;-</span> <span class="fu">paste</span>(</span>
-<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt;h2 style='text-align: left; font-size: 12pt;'&gt;Table 1: Respondent Demographic Information (N=2549)&lt;/h2&gt;"</span>,</span>
-<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>(formatted_table_race_ethnicity),</span>
-<span id="cb25-58"><a href="#cb25-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>(formatted_table_gender_identity),</span>
-<span id="cb25-59"><a href="#cb25-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>(formatted_table_role),</span>
-<span id="cb25-60"><a href="#cb25-60" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">""</span></span>
-<span id="cb25-61"><a href="#cb25-61" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-62"><a href="#cb25-62" aria-hidden="true" tabindex="-1"></a><span class="fu">HTML</span>(combined_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate_rows</span>({{column}}, <span class="at">sep =</span> <span class="st">","</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>({{column}} <span class="sc">:</span><span class="er">=</span> <span class="fu">str_trim</span>({{column}})) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>({{column}} <span class="sc">:</span><span class="er">=</span> <span class="fu">case_when</span>(</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>      {{column}} <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Nonbinary"</span>, <span class="st">"Agender"</span>, <span class="st">"Gender fluid/queer/non-conforming"</span>) <span class="sc">~</span> <span class="st">"Genderqueer*"</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>({{column}})</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  total <span class="ot">&lt;-</span> <span class="fu">nrow</span>(summary_df)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>   summary_df <span class="ot">&lt;-</span> summary_df <span class="sc">%&gt;%</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>({{column}}, <span class="at">name =</span> <span class="st">"count"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">percentage =</span> <span class="fu">round</span>((count <span class="sc">/</span> total) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Category =</span> {{column}}) <span class="sc">%&gt;%</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(count))</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (category_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Gender Identity"</span>)) {</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    summary_df <span class="ot">&lt;-</span> summary_df <span class="sc">%&gt;%</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">order =</span> <span class="fu">case_when</span>(</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>        Category <span class="sc">==</span> <span class="st">"Decline to state"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>        Category <span class="sc">==</span> <span class="st">"Other (write-in)"</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrange</span>(order, <span class="fu">desc</span>(count)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>order)</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(summary_df)</span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>summary_df_race_ethnicity <span class="ot">&lt;-</span> <span class="fu">generate_summary_table</span>(data, <span class="st">`</span><span class="at">What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice</span><span class="st">`</span>, <span class="st">"Race/Ethnicity"</span>)</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>summary_df_gender_identity <span class="ot">&lt;-</span> <span class="fu">generate_summary_table</span>(data, <span class="st">`</span><span class="at">How.would.you.describe.yourself...Mark.one.answer....Selected.Choice</span><span class="st">`</span>, <span class="st">"Gender Identity"</span>)</span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>summary_df_role <span class="ot">&lt;-</span> <span class="fu">generate_summary_table</span>(data, Role, <span class="st">"Role"</span>)</span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>formatted_table_race_ethnicity <span class="ot">&lt;-</span> summary_df_race_ethnicity <span class="sc">%&gt;%</span></span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Race/Ethnicity"</span>, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"20%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">width =</span> <span class="st">"10%"</span>, <span class="at">extra_css =</span> <span class="st">"text-align: right;"</span>)</span>
+<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a>formatted_table_gender_identity <span class="ot">&lt;-</span> summary_df_gender_identity <span class="sc">%&gt;%</span></span>
+<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Gender Identity"</span>, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"20%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">width =</span> <span class="st">"10%"</span>, <span class="at">extra_css =</span> <span class="st">"text-align: right;"</span>)</span>
+<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a>note_gender_identity <span class="ot">&lt;-</span> <span class="st">"&lt;p style='font-size: 10pt;'&gt;&lt;strong&gt;Note:&lt;/strong&gt; Original category names &amp; counts for genderqueer category were: Genderfluid, Genderqueer, or Gender Non-conforming - 75 (2.94%), Nonbinary - 3 (0.12%), Agender - 1 (0.04%)&lt;/p&gt;"</span></span>
+<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a>formatted_table_role <span class="ot">&lt;-</span> summary_df_role <span class="sc">%&gt;%</span></span>
+<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Role"</span>, <span class="st">"Count"</span>, <span class="st">"Percentage (%)"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">width =</span> <span class="st">"20%"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">width =</span> <span class="st">"10%"</span>, <span class="at">extra_css =</span> <span class="st">"text-align: right;"</span>)</span>
+<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a>combined_table <span class="ot">&lt;-</span> <span class="fu">paste</span>(</span>
+<span id="cb25-58"><a href="#cb25-58" aria-hidden="true" tabindex="-1"></a>  <span class="st">"&lt;h2 style='text-align: left; font-size: 12pt;'&gt;Table 1: Respondent Demographic Information (N=2549)&lt;/h2&gt;"</span>,</span>
+<span id="cb25-59"><a href="#cb25-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>(formatted_table_race_ethnicity),</span>
+<span id="cb25-60"><a href="#cb25-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>(formatted_table_gender_identity),</span>
+<span id="cb25-61"><a href="#cb25-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.character</span>(formatted_table_role),</span>
+<span id="cb25-62"><a href="#cb25-62" aria-hidden="true" tabindex="-1"></a>  note_gender_identity,</span>
+<span id="cb25-63"><a href="#cb25-63" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">""</span></span>
+<span id="cb25-64"><a href="#cb25-64" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-65"><a href="#cb25-65" aria-hidden="true" tabindex="-1"></a><span class="fu">HTML</span>(combined_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <h2 style="text-align: left; font-size: 12pt;" class="anchored">Table 1: Respondent Demographic Information (N=2549)</h2>
@@ -977,26 +980,11 @@ $graph</code></pre>
 <td style="text-align: right; width: 10%;">38.41</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left; width: 20%;">Genderfluid, Genderqueer, or Gender Non-conforming</td>
-<td style="text-align: right; width: 10%;">75</td>
-<td style="text-align: right; width: 10%;">2.94</td>
+<td style="text-align: left; width: 20%;">Genderqueer*</td>
+<td style="text-align: right; width: 10%;">79</td>
+<td style="text-align: right; width: 10%;">3.10</td>
 </tr>
 <tr class="even">
-<td style="text-align: left; width: 20%;">Nonbinary</td>
-<td style="text-align: right; width: 10%;">2</td>
-<td style="text-align: right; width: 10%;">0.08</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; width: 20%;">Agender</td>
-<td style="text-align: right; width: 10%;">1</td>
-<td style="text-align: right; width: 10%;">0.04</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; width: 20%;">Nonbinary</td>
-<td style="text-align: right; width: 10%;">1</td>
-<td style="text-align: right; width: 10%;">0.04</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left; width: 20%;">Decline to state</td>
 <td style="text-align: right; width: 10%;">56</td>
 <td style="text-align: right; width: 10%;">2.20</td>
@@ -1039,6 +1027,7 @@ $graph</code></pre>
 </tr>
 </tbody>
 </table>
+<p style="font-size: 10pt;"><strong>Note:</strong> Original category names &amp; counts for genderqueer category were: Genderfluid, Genderqueer, or Gender Non-conforming - 75 (2.94%), Nonbinary - 3 (0.12%), Agender - 1 (0.04%)</p>
 </div>
 </div>
 </div>

@@ -311,8 +311,12 @@ library(htmltools)
 generate_summary_table <- function(df, column, category_name) {
   summary_df <- df %>%
     mutate({{column}} := ifelse({{column}} == "Genderfluid, Genderqueer, or Gender Non-conforming", "Gender fluid/queer/non-conforming", {{column}})) %>%
-    separate_rows({{column}}, sep = ",")
-  
+    separate_rows({{column}}, sep = ",") %>%
+    mutate({{column}} := str_trim({{column}})) %>% 
+    mutate({{column}} := case_when(
+      {{column}} %in% c("Nonbinary", "Agender", "Gender fluid/queer/non-conforming") ~ "Genderqueer*",
+      TRUE ~ as.character({{column}})
+    ))
   total <- nrow(summary_df)
   
    summary_df <- summary_df %>%
@@ -331,11 +335,6 @@ generate_summary_table <- function(df, column, category_name) {
       arrange(order, desc(count)) %>%
       select(-order)
   }
-  
-  summary_df <- summary_df %>%
-    mutate(Category = ifelse(Category == "Gender fluid/queer/non-conforming", "Genderfluid, Genderqueer, or Gender Non-conforming", Category))
-  
-  return(summary_df)
   
   return(summary_df)
 }
@@ -356,6 +355,9 @@ formatted_table_gender_identity <- summary_df_gender_identity %>%
   column_spec(1, width = "20%") %>%
   column_spec(2:3, width = "10%", extra_css = "text-align: right;")
 
+note_gender_identity <- "<p style='font-size: 10pt;'><strong>Note:</strong> Original category names & counts for genderqueer category were: Genderfluid, Genderqueer, or Gender Non-conforming - 75 (2.94%), Nonbinary - 3 (0.12%), Agender - 1 (0.04%)</p>"
+
+
 formatted_table_role <- summary_df_role %>%
   kable(format = "html", col.names = c("Role", "Count", "Percentage (%)")) %>%
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed")) %>%
@@ -366,6 +368,7 @@ combined_table <- paste(
   as.character(formatted_table_race_ethnicity),
   as.character(formatted_table_gender_identity),
   as.character(formatted_table_role),
+  note_gender_identity,
   sep = ""
 )
 HTML(combined_table)

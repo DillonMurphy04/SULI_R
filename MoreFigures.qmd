@@ -6,6 +6,8 @@ editor: visual
 
 ```{r Setup, warning=FALSE, message=FALSE}
 library(tidyverse)
+library(patchwork)
+library(ggsignif)
 data <- read.csv("data_all.csv", skip = 1)
 ```
 
@@ -138,7 +140,12 @@ df_supported <- data %>%
   select(Race, Gender, Role, Changed)
 
 df_supported <- df_supported %>%
-  separate_rows(Race, sep = ",\\s*")
+  separate_rows(Race, sep = ",\\s*") %>% 
+  mutate(Gender := str_trim(Gender)) %>% 
+  mutate(Gender := case_when(
+      Gender %in% c("Nonbinary", "Agender", "Genderfluid, Genderqueer, or Gender Non-conforming") ~ "Genderqueer",
+      TRUE ~ as.character(Gender)
+    ))
 ```
 
 ```{r}
@@ -192,6 +199,44 @@ ggplot(df_role, aes(x = Role, y = proportion, fill = Changed)) +
 ```
 
 ```{r}
+df_supported <- df_supported %>% 
+  filter(!Race %in% c("Decline to state", "Other (write-in)")) %>% 
+  filter(!Gender %in% c("Decline to state", "Other (write-in)"))
+
+df_updated_race <- df_supported %>%
+  mutate(Race_Comparison = case_when(
+    Race %in% c("White") ~ "White",
+    TRUE ~ "BIPOC"
+  )) %>%
+  filter(Race_Comparison %in% c("White", "BIPOC"))
+```
+
+```{r}
+race_counts <- df_updated_race %>%
+  group_by(Race_Comparison, Changed) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  pivot_wider(names_from = Changed, values_from = count, values_fill = 0)
+
+race_test <- chisq.test(as.matrix(race_counts[, -1]))
+```
+
+```{r}
+df_woman_man <- df_supported %>%
+  filter(Gender %in% c("Woman", "Man"))
+contingency_table_woman_man <- table(df_woman_man$Gender, df_woman_man$Changed)
+chisq_test_woman_man <- chisq.test(contingency_table_woman_man)
+p_value_woman_man <- chisq_test_woman_man$p.value
+df_genderqueer_man <- df_supported %>%
+  filter(Gender %in% c("Genderqueer", "Man"))
+contingency_table_genderqueer_man <- table(df_genderqueer_man$Gender, df_genderqueer_man$Changed)
+chisq_test_genderqueer_man <- chisq.test(contingency_table_genderqueer_man)
+p_value_genderqueer_man <- chisq_test_genderqueer_man$p.value
+
+print(paste("p-value for Woman vs Man: ", format(p_value_woman_man, scientific = TRUE)))
+print(paste("p-value for Genderqueer vs Man: ", format(p_value_genderqueer_man, scientific = TRUE)))
+```
+
+```{r}
 df_race <- df_supported %>%
   group_by(Race, Changed) %>%
   summarise(count = n()) %>%
@@ -201,15 +246,20 @@ df_race <- df_supported %>%
 
 df_race$Race <- factor(df_race$Race, levels = df_race$Race)
 
-ggplot(df_race, aes(x = Race, y = proportion)) +
+race_graph <- ggplot(df_race, aes(x = proportion, y = Race)) +
   geom_bar(stat = "identity") +
-  scale_y_continuous(labels = scales::percent_format()) +
+  scale_x_continuous(labels = scales::percent_format(), limits = c(0, 1)) +
   scale_fill_grey(start = 0.8, end = 0.2) +
-  labs(title = "Career Plan Change Due to COVID-19 by Race",
+  labs(title = "Race",
        x = "",
-       y = "Proportion") +
+       y = "") +
   theme_minimal() +
-  coord_flip()
+  geom_segment(aes(x = 0.725, xend = 0.725, y = "Asian", yend = "American Indian or Alaska Native")) + 
+  geom_segment(aes(x = 0.7, xend = 0.725, y = "Asian")) + 
+  geom_segment(aes(x = 0.55, xend = 0.725, y = "American Indian or Alaska Native")) + geom_segment(aes(x = 0.725, xend = 0.73, y = "Hispanic or Latinx")) +
+  annotate("text", x = 0.73, y = "Hispanic or Latinx", label = "BIPOC", hjust = 0) + geom_signif(comparisons = list(c("Hispanic or Latinx", "White")),
+              annotations = paste("p-value:", format(race_test$p.value, scientific = TRUE)), y = 0.775)
+  
 
 
 df_gender <- df_supported %>%
@@ -221,13 +271,24 @@ df_gender <- df_supported %>%
 
 df_gender$Gender <- factor(df_gender$Gender, levels = df_gender$Gender)
 
-ggplot(df_gender, aes(x = Gender, y = proportion)) +
+gender_graph <- ggplot(df_gender, aes(x = proportion, y = Gender)) +
   geom_bar(stat = "identity") +
-  scale_y_continuous(labels = scales::percent_format()) +
+  scale_x_continuous(labels = scales::percent_format(), limits = c(0, 1)) +
   scale_fill_grey(start = 0.8, end = 0.2) +
-  labs(title = "Career Plan Change Due to COVID-19 by Gender",
-       x = "",
-       y = "Proportion") +
-  theme_minimal() +
-  coord_flip()
+labs(title = "Gender",
+     x = "",
+     y = "") +
+theme_minimal() +
+  geom_signif(comparisons = list(c("Genderqueer", "Man")),
+              annotations = paste("p-value:", format(p_value_genderqueer_man, scientific = TRUE))) +
+  geom_signif(comparisons = list(c("Woman", "Man")),
+              annotations = paste("p-value:", format(p_value_woman_man, scientific = TRUE)), y = 0.6)
+
+race_graph / gender_graph +
+plot_layout(guides = "collect") &
+plot_annotation(
+  title = "Career Plan Change Due to COVID-19 by Race & Gender",
+  caption = "Fig 4. Career plan changes due to COVID-19 by racial and gender groups. Shows underrepresented groups exhibited higher levels of change\nas seen from p-value from chi-square tests of independence.",
+  theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
+)
 ```
