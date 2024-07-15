@@ -51,3 +51,183 @@ ggplot(summarized_df, aes(x = Supported, y = Count, fill = Changed)) +
   theme_minimal() +
   theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
 ```
+
+## Race & Gender & Role Support
+
+```{r}
+df_supported <- data %>% 
+  rename(Supported = Did.you.feel.supported.from.your.institution..department..team..etc...,
+         Race = What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice,
+         Gender = How.would.you.describe.yourself...Mark.one.answer....Selected.Choice
+         ) %>% 
+  select(Race, Gender, Role, Supported)
+
+df_supported <- df_supported %>%
+  mutate(Supported = case_when(
+    Supported %in% c("Supported", "supported") ~ "Supported",
+    Supported %in% c("Not supported", "Not Supported", "not supported") ~ "Not supported",
+    Supported %in% c("Neutral feelings", "Neutral feellings", "neutral feelings") ~ "Neutral feelings",
+    Supported == "" ~ "Not coded yet",
+    TRUE ~ Supported
+  ))
+
+df_supported <- df_supported %>%
+  filter(Supported %in% c("Supported", "Not supported"))
+df_supported <- df_supported %>%
+  separate_rows(Race, sep = ",\\s*")
+```
+
+```{r}
+df_race <- df_supported %>%
+  group_by(Race, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+ggplot(df_race, aes(x = Race, y = proportion, fill = Supported)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2) +
+  labs(title = "Support Levels by Race",
+       x = "Race",
+       y = "Proportion",
+       fill = "Support Level") +
+  theme_minimal() +
+  coord_flip()
+
+df_gender <- df_supported %>%
+  group_by(Gender, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+ggplot(df_gender, aes(x = Gender, y = proportion, fill = Supported)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2) +
+  labs(title = "Support Levels by Gender",
+       x = "Gender",
+       y = "Proportion",
+       fill = "Support Level") +
+  theme_minimal() +
+  coord_flip()
+
+df_role <- df_supported %>%
+  group_by(Role, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+ggplot(df_role, aes(x = Role, y = proportion, fill = Supported)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2) +
+  labs(title = "Support Levels by Role",
+       x = "Role",
+       y = "Proportion",
+       fill = "Support Level") +
+  theme_minimal() +
+  coord_flip()
+```
+
+## Race & Gender & Role Career Change
+
+```{r}
+df_supported <- data %>% 
+  rename(Changed = How.has.COVID.19.changed.and.or.altered.your.academic.or.professional.plans...Some.examples..programs.you.will.apply.to..jobs.you.will.apply.to..interest.level.in.certain.career.paths.,
+         Race = What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice,
+         Gender = How.would.you.describe.yourself...Mark.one.answer....Selected.Choice
+         ) %>% 
+  select(Race, Gender, Role, Changed)
+
+df_supported <- df_supported %>%
+  separate_rows(Race, sep = ",\\s*")
+```
+
+```{r}
+df_race <- df_supported %>%
+  group_by(Race, Changed) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+ggplot(df_race, aes(x = Race, y = proportion, fill = Changed)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2) +
+  labs(title = "Career Plan Change by Race",
+       x = "Race",
+       y = "Proportion",
+       fill = "Career Plan Change") +
+  theme_minimal() +
+  coord_flip()
+
+df_gender <- df_supported %>%
+  group_by(Gender, Changed) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+ggplot(df_gender, aes(x = Gender, y = proportion, fill = Changed)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2) +
+  labs(title = "Career Plan Change by Gender",
+       x = "Gender",
+       y = "Proportion",
+       fill = "Career Plan Change") +
+  theme_minimal() +
+  coord_flip()
+
+df_role <- df_supported %>%
+  group_by(Role, Changed) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+ggplot(df_role, aes(x = Role, y = proportion, fill = Changed)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2) +
+  labs(title = "Career Plan Change by Role",
+       x = "Role",
+       y = "Proportion",
+       fill = "Career Plan Change") +
+  theme_minimal() +
+  coord_flip()
+```
+
+```{r}
+df_race <- df_supported %>%
+  group_by(Race, Changed) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count)) %>% 
+  filter(Changed == "CHANGED")%>%
+  arrange(-desc(proportion))
+
+df_race$Race <- factor(df_race$Race, levels = df_race$Race)
+
+ggplot(df_race, aes(x = Race, y = proportion)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2) +
+  labs(title = "Career Plan Change Due to COVID-19 by Race",
+       x = "",
+       y = "Proportion") +
+  theme_minimal() +
+  coord_flip()
+
+
+df_gender <- df_supported %>%
+  group_by(Gender, Changed) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count)) %>% 
+  filter(Changed == "CHANGED")%>%
+  arrange(-desc(proportion))
+
+df_gender$Gender <- factor(df_gender$Gender, levels = df_gender$Gender)
+
+ggplot(df_gender, aes(x = Gender, y = proportion)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2) +
+  labs(title = "Career Plan Change Due to COVID-19 by Gender",
+       x = "",
+       y = "Proportion") +
+  theme_minimal() +
+  coord_flip()
+```
