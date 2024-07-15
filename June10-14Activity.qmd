@@ -309,11 +309,13 @@ render_summary_table_graph(data, Role, "Role")
 ```{r}
 library(htmltools)
 generate_summary_table <- function(df, column, category_name) {
-  total <- nrow(df)
-  
   summary_df <- df %>%
     mutate({{column}} := ifelse({{column}} == "Genderfluid, Genderqueer, or Gender Non-conforming", "Gender fluid/queer/non-conforming", {{column}})) %>%
-    separate_rows({{column}}, sep = ",") %>%
+    separate_rows({{column}}, sep = ",")
+  
+  total <- nrow(summary_df)
+  
+   summary_df <- summary_df %>%
     count({{column}}, name = "count") %>%
     mutate(percentage = round((count / total) * 100, 2)) %>%
     rename(Category = {{column}}) %>%
