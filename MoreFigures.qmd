@@ -33,6 +33,12 @@ head(df_supported)
 ```
 
 ```{r}
+contingency_table <- table(df_supported$Supported, df_supported$Changed)
+chisq_test <- chisq.test(contingency_table)
+p_value <- chisq_test$p.value
+```
+
+```{r}
 summarized_df <- df_supported %>%
   group_by(Supported, Changed) %>%
   summarise(Count = n()) %>%
@@ -52,6 +58,37 @@ ggplot(summarized_df, aes(x = Supported, y = Count, fill = Changed)) +
   scale_fill_manual(values = c("NO CHANGE" = "grey70", "CHANGED" = "grey30")) +
   theme_minimal() +
   theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
+```
+
+```{r}
+df_filtered <- df_supported %>%
+  filter(Supported %in% c("Not supported", "Supported", "Neutral feelings"))
+
+summarized_df <- df_filtered %>%
+  group_by(Supported, Changed) %>%
+  summarise(Count = n()) %>%
+  mutate(Proportion = Count / sum(Count)) %>%
+  ungroup()
+
+summarized_df$Supported <- factor(summarized_df$Supported, levels = c("Supported", "Not supported", "Neutral feelings"))
+
+ggplot(summarized_df, aes(x = Supported, y = Proportion, fill = Changed)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Impact of Institutional Support on Career Plans",
+       x = "Institutional Support",
+       y = "Proportion",
+       fill = "Career Plan Change",
+       caption = "Fig 3. The relationship between perceived institutional support and changes in academic or professional plans due to COVID-19,\nshowing signifcant association between support and career plan change, as shown from p-value from chi-square test of independence.") +
+  scale_fill_manual(values = c("NO CHANGE" = "grey70", "CHANGED" = "grey30")) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::percent_format(), limits = c(0, 1)) +
+  theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16)) +
+  geom_segment(aes(x = 1 - 0.25, xend = 2 - 0.25, y = 0.75, yend = 0.75)) +
+  geom_segment(aes(x = 1 - 0.25, xend = 1 - 0.25, y = 0.35, yend = 0.75)) +
+  geom_segment(aes(x = 2 - 0.25, xend = 2 - 0.25, y = 0.73, yend = 0.75)) +
+  geom_segment(aes(x = (1.75 + 0.75) / 2, xend = (1.75 + 0.75) / 2, y = 0.75, yend = 0.765)) +
+  annotate("text", x = (1.75 + 0.75) / 2, y = 0.78, label = paste("p-value:", format(p_value, scientific = TRUE)))
+
 ```
 
 ## Race & Gender & Role Support
