@@ -200,6 +200,7 @@ top3_personal <- df_personal_long %>%
 
 combined_plots
 ```
+
 ```{r}
 total_personal_count <- sum(df_personal_long$Count)
 df_personal_long <- df_personal_long %>%
@@ -239,7 +240,6 @@ combined_plots <- plot_personal / plot_professional +
 
 combined_plots
 ```
-
 
 ## Demographics Visualizations
 
