@@ -24,7 +24,6 @@ df_supported <- df_supported %>%
     Supported %in% c("Supported", "supported") ~ "Supported",
     Supported %in% c("Not supported", "Not Supported", "not supported") ~ "Not supported",
     Supported %in% c("Neutral feelings", "Neutral feellings", "neutral feelings") ~ "Neutral feelings",
-    Supported == "" ~ "Not coded yet",
     TRUE ~ Supported
   ))
 
