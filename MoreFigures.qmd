@@ -78,7 +78,7 @@ ggplot(summarized_df, aes(x = Supported, y = Proportion, fill = Changed)) +
        x = "Institutional Support",
        y = "Proportion",
        fill = "Career Plan Change",
-       caption = "Fig 3. The relationship between perceived institutional support and changes in academic or professional plans due to COVID-19,\nshowing signifcant association between support and career plan change, as shown from p-value from chi-square test of independence.") +
+       caption = "Fig 1. The relationship between perceived institutional support and changes in academic or professional plans due to COVID-19,\nshowing signifcant association between support and career plan change, as shown from p-value from chi-square test of independence.") +
   scale_fill_manual(values = c("NO CHANGE" = "grey70", "CHANGED" = "grey30")) +
   theme_minimal() +
   scale_y_continuous(labels = scales::percent_format(), limits = c(0, 1)) +
@@ -325,7 +325,7 @@ race_graph / gender_graph +
 plot_layout(guides = "collect") &
 plot_annotation(
   title = "Career Plan Change Due to COVID-19 by Race & Gender",
-  caption = "Fig 4. Career plan changes due to COVID-19 by racial and gender groups. Shows underrepresented groups exhibited higher levels of change\nas seen from p-value from chi-square tests of independence.",
+  caption = "Fig 2. Career plan changes due to COVID-19 by racial and gender groups. Shows underrepresented groups exhibited higher levels of change\nas seen from p-value from chi-square tests of independence.",
   theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
 )
 ```
