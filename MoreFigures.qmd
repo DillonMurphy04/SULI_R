@@ -8,6 +8,8 @@ editor: visual
 library(tidyverse)
 library(patchwork)
 library(ggsignif)
+library(kableExtra)
+library(ggrepel)
 data <- read.csv("data_all.csv", skip = 1)
 ```
 
@@ -327,4 +329,285 @@ plot_annotation(
   caption = "Fig 2. Career plan changes due to COVID-19 by racial and gender groups. Shows underrepresented groups exhibited higher levels of change\nas seen from p-value from chi-square tests of independence.",
   theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
 )
+```
+
+## Changed By Supported by Race
+
+```{r}
+df_supported <- data %>% 
+  rename(Supported = Did.you.feel.supported.from.your.institution..department..team..etc...,
+         Changed = How.has.COVID.19.changed.and.or.altered.your.academic.or.professional.plans...Some.examples..programs.you.will.apply.to..jobs.you.will.apply.to..interest.level.in.certain.career.paths.,
+         Race = What.is.your.race.and.or.ethnicity..Check.all.that.apply....Selected.Choice,
+         Gender = How.would.you.describe.yourself...Mark.one.answer....Selected.Choice
+         ) %>% 
+  select(Race, Gender, Changed, Supported)
+
+df_supported <- df_supported %>%
+  mutate(Supported = case_when(
+    Supported %in% c("Supported", "supported") ~ "Supported",
+    Supported %in% c("Not supported", "Not Supported", "not supported") ~ "Not supported",
+    Supported %in% c("Neutral feelings", "Neutral feellings", "neutral feelings") ~ "Neutral feelings",
+    Supported == "" ~ "Not coded yet",
+    TRUE ~ Supported
+  ))
+
+df_supported <- df_supported %>%
+  filter(Supported %in% c("Supported", "Not supported"))
+df_supported <- df_supported %>%
+  separate_rows(Race, sep = ",\\s*") %>% 
+  mutate(Gender := str_trim(Gender)) %>% 
+  mutate(Gender := case_when(
+      Gender %in% c("Nonbinary", "Agender", "Genderfluid, Genderqueer, or Gender Non-conforming") ~ "Genderqueer",
+      TRUE ~ as.character(Gender)
+    ))
+
+df_supported <- df_supported %>% 
+  filter(!Race %in% c("Decline to state", "Other (write-in)")) %>% 
+  filter(!Gender %in% c("Decline to state", "Other (write-in)"))
+```
+
+```{r}
+df_race <- df_supported %>%
+  group_by(Race, Changed, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+df_gender <- df_supported %>%
+  group_by(Gender, Changed, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+```
+
+```{r}
+df_race <- df_race %>%
+  mutate(Support_Change = interaction(Supported, Changed))
+
+ggplot(df_race, aes(x = proportion, y = reorder(Race, proportion), fill = Support_Change)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = proportion), position = position_dodge(width = 0.8), hjust = -0.1)+
+  facet_wrap(~ Support_Change) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2, name = "Support Status and Change") +
+  labs(title = "Impact of Institutional Support on Career Plan Changes by Race",
+       x = "Proportion of Responses",
+       y = "Race") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+df_updated_race <- df_supported %>%
+  mutate(Race_Comparison = case_when(
+    Race %in% c("White") ~ "White",
+    TRUE ~ "BIPOC"
+  )) %>%
+  filter(Race_Comparison %in% c("White", "BIPOC"))
+ 
+df_race <- df_updated_race %>%
+  group_by(Race_Comparison, Changed, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = Race_Comparison, values_from = c(count,proportion)) %>%
+  mutate(difference = proportion_BIPOC  - proportion_White)
+df_race
+```
+
+```{r}
+df_gender <- df_gender %>%
+  mutate(Support_Change = interaction(Supported, Changed))
+
+ggplot(df_gender, aes(x = proportion, y = reorder(Gender, proportion), fill = Support_Change)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = proportion), position = position_dodge(width = 0.8), hjust = -0.1)+
+  facet_wrap(~ Support_Change) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2, name = "Support Status and Change") +
+  labs(title = "Impact of Institutional Support on Career Plan Changes by Gender",
+       x = "Proportion of Responses",
+       y = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+summarized_df <- df_supported %>%
+  group_by(Race, Supported) %>%
+  summarise(Count = n()) %>%
+  mutate(proportion = Count / sum(Count))
+
+ggplot(summarized_df, aes(x = proportion, y = Race, fill = Supported)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Feelings of Support by Race",
+       x = "Proportion",
+       y = "")
+```
+
+```{r}
+ggplot(df_race, aes(x = Race, y = proportion , fill = Supported)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Changed) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2, name = "Support Status") +
+  labs(title = "Impact of Institutional Support on Career Plan Changes by Race",
+       x = "Race",
+       y = "Proportion of Responses") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+df_race <- df_supported %>%
+  group_by(Race, Changed, Supported) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  group_by(Race, Supported) %>%
+  mutate(total_count = sum(count),
+         proportion = count / total_count) %>%
+  ungroup()
+ggplot(df_race, aes(x = Race, y = proportion , fill = Supported)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Changed) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2, name = "Support Status") +
+  labs(title = "Impact of Institutional Support on Career Plan Changes by Race",
+       x = "Race",
+       y = "Proportion of Responses") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+df_race <- df_race %>%
+  mutate(Support_Change = interaction(Supported, Changed))
+
+ggplot(df_race, aes(x = proportion, y = reorder(Race, proportion), fill = Support_Change)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = proportion), position = position_dodge(width = 0.8), hjust = -0.1)+
+  facet_wrap(~ Support_Change) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_fill_grey(start = 0.8, end = 0.2, name = "Support Status and Change") +
+  labs(title = "Impact of Institutional Support on Career Plan Changes by Race",
+       x = "Proportion of Responses",
+       y = "Race") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+df_race <- df_supported %>%
+  group_by(Race, Changed, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count),
+         total_support = sum(count))
+
+overall_support <- df_supported %>%
+  group_by(Race, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(overall_proportion = count / sum(count),
+         total_race = sum(count))
+
+df_race_deviation <- df_race %>%
+    left_join(overall_support, by = c("Race", "Supported")) %>%
+    mutate(deviation_from_mean = proportion - overall_proportion) %>% 
+    filter(Supported == "Supported",
+           Changed == "NO CHANGE")
+```
+
+```{r}
+label_data_1 <- df_race_deviation %>%
+  filter(Changed == "NO CHANGE") %>%
+  filter(Race == "American Indian or Alaska Native")
+label_data_2 <- df_race_deviation %>%
+  filter(Changed == "NO CHANGE") %>%
+  filter(Race == "White")
+
+race_graph <- ggplot(df_race_deviation %>% filter(Changed == "NO CHANGE"), 
+                         aes(x = deviation_from_mean, y = reorder(Race, deviation_from_mean))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(title = "Race",
+       x = "",
+       y = "") +
+  theme_minimal() +
+  xlim(0,0.4) +
+    geom_label_repel(data = label_data_1, 
+                   aes(label = "Largest increase in percieved institutional support"),
+                   nudge_x = 0.1, 
+                   color = "black", 
+                   box.padding = 0.5, 
+                   point.padding = 0.5, 
+                   segment.color = 'grey50',
+                   show.legend = FALSE)+
+    geom_label_repel(data = label_data_2, 
+                   aes(label = "Smallest increase in percieved institutional support"),
+                   nudge_x = 0.1, 
+                   color = "black", 
+                   box.padding = 0.5, 
+                   point.padding = 0.5, 
+                   segment.color = 'grey50',
+                   show.legend = FALSE)+
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+```
+
+```{r}
+df_gender <- df_supported %>%
+  group_by(Gender, Changed, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(proportion = count / sum(count))
+
+overall_support <- df_supported %>%
+  group_by(Gender, Supported) %>%
+  summarise(count = n()) %>%
+  mutate(overall_proportion = count / sum(count))
+
+df_gender_deviation <- df_gender %>%
+    left_join(overall_support, by = c("Gender", "Supported")) %>%
+    mutate(deviation_from_mean = proportion - overall_proportion) %>% 
+    filter(Supported == "Supported")
+```
+
+```{r}
+label_data_1 <- df_gender_deviation %>%
+  filter(Changed == "NO CHANGE") %>%
+  filter(Gender == "Genderqueer")
+label_data_2 <- df_gender_deviation %>%
+  filter(Changed == "NO CHANGE") %>%
+  filter(Gender == "Man")
+
+gender_graph <- ggplot(df_gender_deviation %>% filter(Changed == "NO CHANGE"), 
+                         aes(x = deviation_from_mean, y = reorder(Gender, deviation_from_mean))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(title = "Gender",
+       x = "",
+       y = "") +
+  theme_minimal() +
+  xlim(0,0.4)+
+    geom_label_repel(data = label_data_1, 
+                   aes(label = "Largest increase in percieved institutional support"),
+                   nudge_x = 0.1, 
+                   color = "black", 
+                   box.padding = 0.5, 
+                   point.padding = 0.5, 
+                   segment.color = 'grey50',
+                   show.legend = FALSE)+
+    geom_label_repel(data = label_data_2, 
+                   aes(label = "Smallest increase in percieved institutional support"),
+                   nudge_x = 0.1, 
+                   color = "black", 
+                   box.padding = 0.5, 
+                   point.padding = 0.5, 
+                   segment.color = 'grey50',
+                   show.legend = FALSE)
+```
+
+```{r}
+race_graph / gender_graph +   
+  plot_annotation(
+    caption = "Figure 4. Deviation from the mean proportion of perceived institutional support by race and gender for individuals who did not change their career intentions, ordered decreasingly.\nThus top groups saw the largest increase in percieved institutional support (of those who did not express change in career intentions). Data suggest underrepresented individuals\nwho did not express change in career intentions percieved more feelings of institutional support.",
+    theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
+  )
+
 ```
