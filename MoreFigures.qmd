@@ -606,7 +606,7 @@ gender_graph <- ggplot(df_gender_deviation %>% filter(Changed == "NO CHANGE"),
 ```{r}
 race_graph / gender_graph +   
   plot_annotation(
-    caption = "Figure 4. Deviation from the mean proportion of perceived institutional support by race and gender for individuals who did not change their career intentions, ordered decreasingly.\nThus top groups saw the largest increase in percieved institutional support (of those who did not express change in career intentions). Data suggest underrepresented individuals\nwho did not express change in career intentions percieved more feelings of institutional support.",
+    caption = "Figure 4. Deviation from the respective group mean proportion of perceived institutional support by race and gender for individuals who did not change their career intentions, ordered\ndecreasingly. Thus top groups saw the largest increase in percieved institutional support (of those who did not express change in career intentions). Data suggest underrepresented\nindividuals who did not express change in career intentions percieved more feelings of institutional support.",
     theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
   )
 
