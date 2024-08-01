@@ -514,15 +514,12 @@ df_race_deviation <- df_race %>%
 ```
 
 ```{r}
-label_data_1 <- df_race_deviation %>%
-  filter(Changed == "NO CHANGE") %>%
+label_data_1 <- df_race_deviation %>% 
   filter(Race == "American Indian or Alaska Native")
 label_data_2 <- df_race_deviation %>%
-  filter(Changed == "NO CHANGE") %>%
   filter(Race == "White")
 
-race_graph <- ggplot(df_race_deviation %>% filter(Changed == "NO CHANGE"), 
-                         aes(x = deviation_from_mean, y = reorder(Race, deviation_from_mean))) +
+race_graph <- df_race_deviation %>% ggplot(aes(x = deviation_from_mean, y = reorder(Race, deviation_from_mean))) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_x_continuous(labels = scales::percent_format()) +
   labs(title = "Race",
@@ -555,7 +552,8 @@ race_graph <- ggplot(df_race_deviation %>% filter(Changed == "NO CHANGE"),
 df_gender <- df_supported %>%
   group_by(Gender, Changed, Supported) %>%
   summarise(count = n()) %>%
-  mutate(proportion = count / sum(count))
+  mutate(proportion = count / sum(count),
+         total_support = sum(count))
 
 overall_support <- df_supported %>%
   group_by(Gender, Supported) %>%
@@ -565,19 +563,17 @@ overall_support <- df_supported %>%
 df_gender_deviation <- df_gender %>%
     left_join(overall_support, by = c("Gender", "Supported")) %>%
     mutate(deviation_from_mean = proportion - overall_proportion) %>% 
-    filter(Supported == "Supported")
+    filter(Supported == "Supported", Changed == "NO CHANGE")
 ```
 
 ```{r}
 label_data_1 <- df_gender_deviation %>%
-  filter(Changed == "NO CHANGE") %>%
   filter(Gender == "Genderqueer")
 label_data_2 <- df_gender_deviation %>%
-  filter(Changed == "NO CHANGE") %>%
   filter(Gender == "Man")
 
-gender_graph <- ggplot(df_gender_deviation %>% filter(Changed == "NO CHANGE"), 
-                         aes(x = deviation_from_mean, y = reorder(Gender, deviation_from_mean))) +
+gender_graph <- df_gender_deviation %>% 
+  ggplot(aes(x = deviation_from_mean, y = reorder(Gender, deviation_from_mean))) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_x_continuous(labels = scales::percent_format()) +
   labs(title = "Gender",
@@ -610,4 +606,24 @@ race_graph / gender_graph +
     theme = theme(plot.caption = element_text(hjust = 0, margin = margin(t = 0, r = 0, b = 0, l = 0), size = 16))
   )
 
+```
+
+```{r}
+df <- df_supported %>%
+  mutate(
+    Supported = factor(Supported, levels = c("Not supported", "Supported")),
+    Changed = factor(Changed, levels = c("CHANGED", "NO CHANGE")),
+    Gender = factor(Gender, levels = c("Genderqueer", "Woman", "Man")),
+    Race = factor(ifelse(Race == "White", "White", "BIPOC"), levels = c("White", "BIPOC"))
+  )
+
+model_interaction <- glm(Supported ~ Race:Changed, data = df, family = binomial)
+
+summary(model_interaction)
+```
+
+```{r}
+model_interaction <- glm(Supported ~ Gender:Changed, data = df, family = binomial)
+
+summary(model_interaction)
 ```

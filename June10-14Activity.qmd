@@ -907,3 +907,44 @@ top_words %>%
   arrange(Type, desc(n)) %>%
   print()
 ```
+
+```{r}
+word_data <- data.frame(
+  Professional = data$Feel.free.to.comment.on.any.of.the.items.you.marked.above..1,
+  Personal = data$Feel.free.to.comment.on.any.of.the.items.you.marked.above.,
+  Changed_Goals = data$X.Optional..Please.explain.or.give.an.example.,
+  Changed_Projects = data$X.Optional..Please.explain.or.give.an.example..1
+)
+
+responses <- word_data %>%
+  pivot_longer(cols = c(Professional, Personal, Changed_Goals, Changed_Projects), 
+               names_to = "Type", 
+               values_to = "Response") %>%
+  filter(!is.na(Response))
+
+responses_tokens <- responses %>%
+  unnest_tokens(word, Response) %>%
+  filter(!word %in% stop_words$word) %>%
+  filter(!str_detect(word, "^[0-9]+$"))
+
+responses_tokens <- responses_tokens %>%
+  mutate(word = wordStem(word, language = "en"))
+
+word_counts <- responses_tokens %>%
+  count(Type, word, sort = TRUE)
+
+top_words <- word_counts %>%
+  group_by(Type) %>%
+  slice_max(n, n = 10)
+
+ggplot(top_words, aes(x = reorder_within(word, n, Type), y = n, fill = Type)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~Type, scales = "free_y") +
+  scale_x_reordered() +
+  labs(y = "Frequency", x = "Words", title = "Most Common Words in Optional Responses") +
+  coord_flip()
+
+top_words %>%
+  arrange(Type, desc(n)) %>%
+  print()
+```
